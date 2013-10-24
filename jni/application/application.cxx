@@ -7,4 +7,7 @@
 #include "zenilib.h"
 
 #include "bootstrap.cpp"
-#include "Tutorial_State.cpp"
+
+#include "Crate.cpp"
+#include "Crate_State.cpp"
+#include "Player.cpp"
