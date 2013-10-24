@@ -1,0 +1,15 @@
+/*
+
+!.gitignore
+
+!/jni/
+/jni/**
+!/jni/application
+!/jni/application/*
+
+!/assets
+
+!/shotgun.sublime-project
+
+/assets/stderr.txt
+/assets/stdout.txt

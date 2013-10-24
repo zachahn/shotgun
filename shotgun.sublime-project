@@ -1,0 +1,26 @@
+{
+	"folders":
+	[
+		{
+			"path": "/C/Users/Zach/Code/shotgun"
+		}
+	],
+	"build_systems":
+	[
+		{
+			"cmd": ["C:\\Users\\Zach\\Code\\shotgun\\multi-build_sh.bat", "release32"],
+			"path": "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319",
+			"working_dir": "C:\\Users\\Zach\\Code\\shotgun",
+			"shell": true,
+			"name": "zenilib",
+			// "cmd": ["C:\\Users\\Zach\\Code\\shotgun\\Play game x32.exe"],
+
+			"variants": [
+				{
+					"cmd": ["C:\\Users\\Zach\\Code\\shotgun\\Play game x32.exe"],
+					"name": "Run"
+				}
+			]
+		}
+	]
+}
