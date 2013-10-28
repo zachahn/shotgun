@@ -5,10 +5,14 @@
 #include "Player.h"
 #include <Zeni/Gamestate.h>
 #include <Zeni/Timer.h>
+#include <vector>
+
+using namespace std;
 
 class Crate_State : public Zeni::Gamestate_Base {
 public:
 	Crate_State();
+	~Crate_State();
 
 	void on_push();
 
@@ -23,6 +27,8 @@ private:
 	void partial_step(const float &time_step, const Zeni::Vector3f &velocity);
 
 	Zeni::Time_HQ time_passed;
+
+	vector<Crate*> crates;
 
 	Crate m_crate;
 	Player m_player;

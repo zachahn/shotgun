@@ -8,15 +8,20 @@ using namespace Zeni::Collision;
 using namespace std;
 
 Crate_State::Crate_State()
-	: m_crate(Point3f(12.0f, 12.0f, 0.0f)
-	, Vector3f(30.0f, 30.0f, 30.0f))
-	, m_player(Camera(Point3f(0.0f, 0.0f, 50.0f)
+	: m_player(Camera(Point3f(0.0f, 0.0f, 50.0f)
 	, Quaternion()
 	, 1.0f, 10000.0f)
 	, Vector3f(0.0f, 0.0f, -39.0f)
 	, 11.0f)
 {
+	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f), Vector3f(30.0f, 30.0f, 30.0f)));
+	crates.push_back(new Crate(Point3f(12.0f, 12.0f, 0.0f), Vector3f(30.0f, 30.0f, 30.0f)));
+
 	set_pausable(true);
+}
+
+Crate_State::~Crate_State() {
+	while(! crates.empty()) delete crates.back(), crates.pop_back();
 }
 
 void Crate_State::on_push() {
@@ -101,7 +106,10 @@ void Crate_State::render() {
 	// );
 	get_Video().set_3d(m_player.get_camera());
 
-	m_crate.render();
+	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
+		cout << "asdf" << endl;
+		(*c)->render();
+	}
 
 	render_image(
 		  "CRATE.PNG"
@@ -116,18 +124,20 @@ void Crate_State::partial_step(const float &time_step, const Vector3f &velocity)
 
 	m_player.step(time_step);
 
-	/** If collision with the crate has occurred, roll things back **/
-	if (m_crate.get_body().intersects(m_player.get_body())) {
-		if (m_moved) {
-			/** Play a sound if possible **/
-			m_crate.collide();
-			m_moved = false;
+	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
+		/** If collision with the crate has occurred, roll things back **/
+		if ((*c)->get_body().intersects(m_player.get_body())) {
+			if (m_moved) {
+				/** Play a sound if possible **/
+				(*c)->collide();
+				m_moved = false;
+			}
+
+			m_player.set_position(backup_position);
+
+			/** Bookkeeping for jumping controls **/
+			if (velocity.k < 0.0f)
+				m_player.set_on_ground(true);
 		}
-
-		m_player.set_position(backup_position);
-
-		/** Bookkeeping for jumping controls **/
-		if (velocity.k < 0.0f)
-			m_player.set_on_ground(true);
 	}
 }
