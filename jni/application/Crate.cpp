@@ -5,6 +5,9 @@
 using namespace Zeni;
 using namespace Zeni::Collision;
 
+#include <iostream>
+using namespace std;
+
 
 Crate::Crate(const Point3f &corner_, const Vector3f &scale_, const Quaternion &rotation_)
 	: m_source(new Sound_Source(get_Sounds()["collide"]))
@@ -62,6 +65,20 @@ void Crate::render() {
 void Crate::collide() {
 	if (! m_source->is_playing())
 		m_source->play();
+}
+
+void Crate::look_at(Vector3f pos) {
+	Vector3f cxy;
+	Vector3f pxy;
+	Quaternion dq;
+
+	cxy.x = m_corner.x;
+	cxy.y = m_corner.y;
+	pxy.x = pos.x;
+	pxy.y = pos.y;
+
+	dq = dq.Vector3f_to_Vector3f(cxy, pxy);
+	m_rotation = dq;
 }
 
 void Crate::create_body() {

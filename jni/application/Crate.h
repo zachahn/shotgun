@@ -7,6 +7,8 @@
 #include <Zeni/Sound.h>
 #include <Zeni/Vector3f.h>
 
+using namespace Zeni;
+
 class Crate {
 public:
 	Crate(const Zeni::Point3f &corner_ = Zeni::Point3f(0.0f, 0.0f, 0.0f),
@@ -19,6 +21,8 @@ public:
 	void render();
 
 	void collide();
+
+	void look_at(Vector3f);
 
 	const Zeni::Collision::Parallelepiped & get_body() const {return m_body;}
 

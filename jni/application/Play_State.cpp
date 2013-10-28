@@ -92,6 +92,11 @@ void Play_State::perform_logic() {
 			m_player.set_on_ground(true);
 		}
 	}
+
+	const Point3f &position = m_player.get_camera().position;
+	for (std::vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
+		(*c)->look_at(position);
+	}
 }
 
 void Play_State::render() {
@@ -107,7 +112,6 @@ void Play_State::render() {
 	get_Video().set_3d(m_player.get_camera());
 
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
-		cout << "asdf" << endl;
 		(*c)->render();
 	}
 
