@@ -21,9 +21,14 @@ class Instructions_State : public Gamestate_Base {
 
 public:
 	Instructions_State()
-		: tb(Point2f(), Point2f(800.0f, 600.0f), "system_36_800x600",
-		"This demonstrates a simple way of doing collision detection and response in 3D. "
-		"Unfortunately, it is inadequate for more sophisticated scenarios.", Color())
+		: tb(
+			  Point2f()
+			, Point2f(800.0f, 600.0f)
+			, "system_36_800x600"
+			, "This demonstrates a simple way of doing collision detection and response in 3D. "
+			  "Unfortunately, it is inadequate for more sophisticated scenarios."
+			, Color()
+		  )
 	{
 		tb.give_BG_Renderer(new Widget_Renderer_Color(get_Colors()["black"]));
 	}
@@ -46,7 +51,7 @@ private:
 class Bootstrap {
 	class Gamestate_One_Initializer : public Gamestate_Zero_Initializer {
 		virtual Gamestate_Base * operator()() {
-			Window::set_title("zenilib Crate Example");
+			Window::set_title("Shotgun");
 
 			get_Controllers();
 			get_Video();
@@ -54,7 +59,7 @@ class Bootstrap {
 			get_Fonts();
 			get_Sounds();
 
-			return new Title_State<Crate::Crate_State, Instructions_State>("zenilib Example:\nCrate");
+			return new Title_State<Crate_State, Instructions_State>("Shotgun");
 		}
 	} m_goi;
 
