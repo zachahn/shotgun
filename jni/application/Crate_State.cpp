@@ -54,18 +54,10 @@ void Crate_State::perform_logic() {
 	float processing_time = float(current_time.get_seconds_since(time_passed));
 	time_passed = current_time;
 
-	/** Get forward and left vectors in the XY-plane **/
-	const Vector3f forward = m_player.get_camera().get_forward().get_ij().normalized();
-	const Vector3f left = m_player.get_camera().get_left().get_ij().normalized();
-
-	/** Get velocity vector split into a number of axes **/
-	// const Vector3f velocity = 50.0f * m_player.forwardVector;(m_controls.forward - m_controls.back) * 50.0f * forward
-	// 												+ (m_controls.left - m_controls.right) * 50.0f * left;
 	const Vector3f velocity = m_player.get_next_velocity() * 50.0f;
 	const Vector3f x_vel = velocity.get_i();
 	const Vector3f y_vel = velocity.get_j();
-	// Vector3f z_vel = m_player.get_velocity().get_k();
-	Vector3f z_vel = velocity.get_k();
+	const Vector3f z_vel = velocity.get_k();
 
 	/** Bookkeeping for sound effects **/
 	if (velocity.magnitude() != 0.0f)
@@ -82,9 +74,6 @@ void Crate_State::perform_logic() {
 	{
 		if (time_step > processing_time)
 			time_step = processing_time;
-
-		/** Gravity has its effect **/
-		z_vel -= Vector3f(0.0f, 0.0f, 50.0f * time_step);
 
 		/** Try to move on each axis **/
 		partial_step(time_step, x_vel);

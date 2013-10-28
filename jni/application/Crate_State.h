@@ -7,15 +7,6 @@
 #include <Zeni/Timer.h>
 
 class Crate_State : public Zeni::Gamestate_Base {
-	struct Controls {
-		Controls() : forward(false), left(false), back(false), right(false) {}
-
-		bool forward;
-		bool left;
-		bool back;
-		bool right;
-	} m_controls;
-
 public:
 	Crate_State();
 
