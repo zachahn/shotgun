@@ -1,21 +1,29 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <Zeni/Camera.h>
-#include <Zeni/Collision.h>
-#include <Zeni/Quaternion.h>
-#include <Zeni/Vector3f.h>
+#include <zenilib.h>
 
-namespace Crate {
+using namespace Zeni;
 
-  class Player {
-  public:
+class Player {
+public:
+	Vector3f forwardVector;
+	Vector3f leftVector;
+	Vector3f backVector;
+	Vector3f rightVector;
+	Vector3f upVector;
+	Vector3f downVector;
+
 	Player(const Zeni::Camera &camera_,
 		   const Zeni::Vector3f &end_point_b_,
 		   const float radius_);
 
+	bool on_key(const SDL_KeyboardEvent &event);
+
+	Vector3f get_next_velocity();
+
 	// Level 1
-	const Zeni::Camera & get_camera() const {return m_camera;}
+	const Zeni::Camera & get_camera() const {return camera;}
 
 	// Level 2
 	void set_position(const Zeni::Point3f &position);
@@ -35,11 +43,11 @@ namespace Crate {
 
 	void step(const float &time_step);
 
-  private:
+private:
 	void create_body();
 
 	// Level 1/2
-	Zeni::Camera m_camera;
+	Zeni::Camera camera;
 
 	// Level 2
 	Zeni::Vector3f m_end_point_b;
@@ -52,8 +60,6 @@ namespace Crate {
 
 	// Level 4
 	// Controls are external to Player
-  };
-
-}
+};
 
 #endif
