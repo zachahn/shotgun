@@ -6,7 +6,7 @@
 
 #include <zenilib.h>
 
-#include "Crate_State.h"
+#include "Play_State.h"
 
 #if defined(_DEBUG) && defined(_WINDOWS)
 #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -59,7 +59,7 @@ class Bootstrap {
 			get_Fonts();
 			get_Sounds();
 
-			return new Title_State<Crate_State, Instructions_State>("Shotgun");
+			return new Title_State<Play_State, Instructions_State>("Shotgun");
 		}
 	} m_goi;
 

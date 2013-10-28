@@ -1,5 +1,5 @@
-#ifndef CRATE_STATE_H
-#define CRATE_STATE_H
+#ifndef PLAY_STATE_H
+#define PLAY_STATE_H
 
 #include "Crate.h"
 #include "Player.h"
@@ -9,10 +9,10 @@
 
 using namespace std;
 
-class Crate_State : public Zeni::Gamestate_Base {
+class Play_State : public Zeni::Gamestate_Base {
 public:
-	Crate_State();
-	~Crate_State();
+	Play_State();
+	~Play_State();
 
 	void on_push();
 

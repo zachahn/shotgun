@@ -10,7 +10,7 @@
 class Crate {
 public:
 	Crate(const Zeni::Point3f &corner_ = Zeni::Point3f(0.0f, 0.0f, 0.0f),
-				const Zeni::Vector3f &scale_ = Zeni::Vector3f(1.0f, 1.0f, 1.0f),
+				const Zeni::Vector3f &scale_ = Zeni::Vector3f(30.0f, 30.0f, 30.0f),
 				const Zeni::Quaternion &rotation_ = Zeni::Quaternion::Axis_Angle(Zeni::Vector3f(0.0f, 0.0f, 1.0f), 0.0f));
 	Crate(const Crate &rhs);
 	Crate & operator=(const Crate &rhs);

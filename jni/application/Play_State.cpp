@@ -1,34 +1,34 @@
 #include <zenilib.h>
 
-#include "Crate_State.h"
+#include "Play_State.h"
 
 using namespace Zeni;
 using namespace Zeni::Collision;
 #include <iostream>
 using namespace std;
 
-Crate_State::Crate_State()
+Play_State::Play_State()
 	: m_player(Camera(Point3f(0.0f, 0.0f, 50.0f)
 	, Quaternion()
 	, 1.0f, 10000.0f)
 	, Vector3f(0.0f, 0.0f, -39.0f)
 	, 11.0f)
 {
-	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f), Vector3f(30.0f, 30.0f, 30.0f)));
-	crates.push_back(new Crate(Point3f(12.0f, 12.0f, 0.0f), Vector3f(30.0f, 30.0f, 30.0f)));
+	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f)));
+	crates.push_back(new Crate(Point3f(12.0f, 12.0f, 0.0f)));
 
 	set_pausable(true);
 }
 
-Crate_State::~Crate_State() {
+Play_State::~Play_State() {
 	while(! crates.empty()) delete crates.back(), crates.pop_back();
 }
 
-void Crate_State::on_push() {
+void Play_State::on_push() {
 	get_Window().set_mouse_state(Window::MOUSE_RELATIVE);
 }
 
-void Crate_State::on_key(const SDL_KeyboardEvent &event) {
+void Play_State::on_key(const SDL_KeyboardEvent &event) {
 	if (event.repeat) {
 		return;
 	}
@@ -40,12 +40,12 @@ void Crate_State::on_key(const SDL_KeyboardEvent &event) {
 	Gamestate_Base::on_key(event);
 }
 
-void Crate_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
+void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 	m_player.adjust_pitch(event.yrel / 500.0f);
 	m_player.turn_left_xy(-event.xrel / 500.0f);
 }
 
-void Crate_State::perform_logic() {
+void Play_State::perform_logic() {
 	// const pair<Point2i, Point2i> proj_res = make_pair(
 	// 	  Point2i(0, 0)
 	// 	, Point2i(854, 480)
@@ -94,7 +94,7 @@ void Crate_State::perform_logic() {
 	}
 }
 
-void Crate_State::render() {
+void Play_State::render() {
 	// const pair<Point2i, Point2i> proj_res = make_pair(
 	// 	  Point2i(0, 0)
 	// 	, Point2i(854, 480)
@@ -118,7 +118,7 @@ void Crate_State::render() {
 	);
 }
 
-void Crate_State::partial_step(const float &time_step, const Vector3f &velocity) {
+void Play_State::partial_step(const float &time_step, const Vector3f &velocity) {
 	m_player.set_velocity(velocity);
 	const Point3f backup_position = m_player.get_camera().position;
 
