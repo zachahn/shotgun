@@ -15,8 +15,10 @@ Crate::Crate(const Point3f &corner_, const Vector3f &scale_, const Quaternion &r
 	, m_scale(scale_)
 	, m_rotation(rotation_)
 {
-	if (! m_instance_count)
-		m_model = new Model("models/crate.3ds");
+	if (! m_instance_count) {
+		box_model = new Model("models/crate.3ds");
+		shield_model = new Model("models/eshield.3ds");
+	}
 	++m_instance_count;
 
 	create_body();
@@ -47,19 +49,25 @@ Crate::~Crate() {
 	delete m_source;
 
 	if (!--m_instance_count) {
-		delete m_model;
-		m_model = 0lu;
+		delete box_model;
+		delete shield_model;
+		box_model = 0lu;
+		shield_model = 0lu;
 	}
 }
 
 void Crate::render() {
 	const std::pair<Vector3f, float> rotation = m_rotation.get_rotation();
 
-	m_model->set_translate(m_corner);
-	m_model->set_scale(m_scale);
-	m_model->set_rotate(rotation.second, rotation.first);
+	box_model->set_translate(m_corner);
+	box_model->set_scale(m_scale);
+	box_model->set_rotate(rotation.second, rotation.first);
 
-	m_model->render();
+	box_model->render();
+
+	shield_model->set_translate(m_corner);
+	shield_model->set_scale(m_scale);
+	shield_model->render();
 }
 
 void Crate::collide() {
@@ -82,15 +90,20 @@ void Crate::look_at(Vector3f pos) {
 }
 
 void Crate::create_body() {
-	m_body = Parallelepiped(
-		  m_corner
-		, m_rotation * m_scale.get_i()
-		, m_rotation * m_scale.get_j()
-		, m_rotation * m_scale.get_k()
-	);
+	// m_body = Parallelepiped(
+	// 	  m_corner
+	// 	, m_rotation * m_scale.get_i()
+	// 	, m_rotation * m_scale.get_j()
+	// 	, m_rotation * m_scale.get_k()
+	// );
+
+	// m_source->set_position(m_corner + m_rotation * m_scale / 2.0f);
+
+	m_body = Sphere(m_corner, m_scale.x);
 
 	m_source->set_position(m_corner + m_rotation * m_scale / 2.0f);
 }
 
-Model * Crate::m_model = 0;
+Model * Crate::box_model = 0;
+Model * Crate::shield_model = 0;
 unsigned long Crate::m_instance_count = 0lu;

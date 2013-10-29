@@ -24,13 +24,14 @@ public:
 
 	void look_at(Vector3f);
 
-	const Zeni::Collision::Parallelepiped & get_body() const {return m_body;}
+	const Zeni::Collision::Sphere & get_body() const {return m_body;}
 
 private:
 	void create_body();
 
 	// Level 1
-	static Zeni::Model * m_model;
+	static Zeni::Model * box_model;
+	static Zeni::Model * shield_model;
 	static unsigned long m_instance_count;
 
 	Zeni::Sound_Source * m_source;
@@ -41,7 +42,7 @@ private:
 	Zeni::Quaternion m_rotation;
 
 	// Level 3
-	Zeni::Collision::Parallelepiped m_body; // not motion so much as collision
+	Zeni::Collision::Sphere m_body; // not motion so much as collision
 
 	// Level 4
 	// A stationary Crate has no controls
