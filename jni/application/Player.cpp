@@ -90,8 +90,8 @@ Vector3f Player::get_next_velocity() {
 }
 
 void Player::render() {
-	model.set_translate(camera.position + Vector3f(40.0f, 40.0f, 0.0f));
-	model.set_scale(Vector3f(10.0f, 10.0f, 10.0f));
+	model.set_translate(center);
+	model.set_scale(Vector3f(m_radius, m_radius, m_radius));
 	model.render();
 }
 
@@ -100,8 +100,8 @@ const Zeni::Camera & Player::get_camera() const {
 }
 
 // Level 2
-void Player::set_position(const Point3f &position) {
-	camera.position = position;
+void Player::set_position(const Point3f &position_) {
+	center = position_;
 	create_body();
 }
 
@@ -119,6 +119,22 @@ void Player::turn_left_xy(const float &theta) {
 	camera.turn_left_xy(theta);
 }
 
+const Zeni::Collision::Sphere & Player::get_body() const {
+	return body;
+}
+
+bool Player::is_on_ground() const {
+	return m_is_on_ground;
+}
+
+const Zeni::Vector3f & Player::get_velocity() const {
+	return m_velocity;
+}
+
+void Player::set_velocity(const Zeni::Vector3f &velocity_) {
+	m_velocity = velocity_;
+}
+
 void Player::set_on_ground(const bool &is_on_ground_) {
 	m_is_on_ground = is_on_ground_;
 	if (m_is_on_ground)
@@ -133,7 +149,7 @@ void Player::jump() {
 }
 
 void Player::step(const float &time_step) {
-	camera.position += time_step * m_velocity;
+	center += time_step * m_velocity;
 	create_body();
 }
 
@@ -149,9 +165,8 @@ bool Player::fire(float time) {
 void Player::create_body() {
 	Sound &sr = get_Sound();
 
-	m_body = Capsule(
-		  camera.position
-		, camera.position + m_end_point_b
+	body = Sphere(
+		  center
 		, m_radius
 	);
 

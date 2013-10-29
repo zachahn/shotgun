@@ -21,6 +21,8 @@ public:
 	float shooting_interval;
 
 	Model model;
+	Point3f center;
+	Quaternion direction;
 
 	Player(const Zeni::Camera &camera_,
 		   const Zeni::Vector3f &end_point_b_,
@@ -42,11 +44,11 @@ public:
 	void turn_left_xy(const float &theta);
 
 	// Level 3
-	const Zeni::Collision::Capsule & get_body() const {return m_body;}
-	bool is_on_ground() const {return m_is_on_ground;}
+	const Zeni::Collision::Sphere & get_body() const;
+	bool is_on_ground() const;
 
-	const Zeni::Vector3f & get_velocity() const {return m_velocity;}
-	void set_velocity(const Zeni::Vector3f &velocity_) {m_velocity = velocity_;}
+	const Zeni::Vector3f & get_velocity() const;
+	void set_velocity(const Zeni::Vector3f &velocity_);
 
 	void set_on_ground(const bool &is_on_ground_);
 	void jump();
@@ -66,7 +68,7 @@ private:
 	float m_radius;
 
 	// Level 3
-	Zeni::Collision::Capsule m_body; // collision
+	Zeni::Collision::Sphere body; // collision
 	Zeni::Vector3f m_velocity;
 	bool m_is_on_ground;
 

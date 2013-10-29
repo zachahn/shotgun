@@ -17,7 +17,7 @@ Play_State::Play_State()
 	: m_player(
 		  Camera(Point3f(0.0f, 0.0f, 50.0f), Quaternion(), 1.0f, 10000.0f)
 		, Vector3f(0.0f, 0.0f, -39.0f)
-		, 11.0f
+		, 30.0f
 	  )
 	, firing(false)
 {
@@ -78,7 +78,7 @@ void Play_State::perform_logic() {
 
 	if (firing) {
 		if (m_player.fire(get_Timer().get_seconds())) {
-			player_bullets.push_back(new Bullet(m_player.get_camera().get_forward(), m_player.get_camera().position));
+			player_bullets.push_back(new Bullet(m_player.get_camera().get_forward(), m_player.center));
 		}
 	}
 
@@ -100,14 +100,14 @@ void Play_State::perform_logic() {
 		partial_step(time_step, z_vel);
 
 		/** Keep player above ground; Bookkeeping for jumping controls **/
-		const Point3f &position = m_player.get_camera().position;
+		const Point3f &position = m_player.center;
 		if (position.z < 50.0f) {
 			m_player.set_position(Point3f(position.x, position.y, 50.0f));
 			m_player.set_on_ground(true);
 		}
 	}
 
-	const Point3f &position = m_player.get_camera().position;
+	const Point3f &position = m_player.center;
 	for (std::vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 		// (*c)->look_at(position);
 	}
@@ -143,7 +143,7 @@ void Play_State::render() {
 
 void Play_State::partial_step(const float &time_step, const Vector3f &velocity) {
 	m_player.set_velocity(velocity);
-	const Point3f backup_position = m_player.get_camera().position;
+	const Point3f backup_position = m_player.center;
 
 	m_player.step(time_step);
 
