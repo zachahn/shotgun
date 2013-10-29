@@ -60,6 +60,12 @@ void Bullet::render() {
 void Bullet::collide() {
 }
 
+void Bullet::fly(float time_step) {
+	center += direction * speed * time_step;
+
+	create_body();
+}
+
 const Sphere & Bullet::get_body() const {
 	return body;
 }

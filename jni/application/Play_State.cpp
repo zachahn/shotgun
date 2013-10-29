@@ -86,10 +86,6 @@ void Play_State::perform_logic() {
 	if (processing_time > 0.1f)
 		processing_time = 0.1f;
 
-	for (std::vector<Bullet*>::iterator b = player_bullets.begin(); b != player_bullets.end(); ++b) {
-		(*b)->center += (*b)->direction * (*b)->speed * processing_time;
-	}
-
 	/** Physics processing loop**/
 	for (float time_step = 0.05f;
 			processing_time > 0.0f;
@@ -115,8 +111,6 @@ void Play_State::perform_logic() {
 	for (std::vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 		// (*c)->look_at(position);
 	}
-
-
 }
 
 void Play_State::render() {
@@ -150,6 +144,28 @@ void Play_State::partial_step(const float &time_step, const Vector3f &velocity) 
 	const Point3f backup_position = m_player.get_camera().position;
 
 	m_player.step(time_step);
+
+	for (vector<Bullet*>::iterator b = player_bullets.begin(); b != player_bullets.end();) {
+		(*b)->fly(time_step);
+
+		bool collided = false;
+
+		for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
+			if ((*c)->get_body().intersects((*b)->get_body())) {
+				(*c)->collide();
+				collided = true;
+				break;
+			}
+		}
+
+		if (collided) {
+			delete (*b);
+			b = player_bullets.erase(b);
+		}
+		else {
+			++b;
+		}
+	}
 
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 		/** If collision with the crate has occurred, roll things back **/

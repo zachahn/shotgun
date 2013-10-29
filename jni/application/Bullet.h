@@ -24,6 +24,8 @@ public:
 
 	void collide();
 
+	void fly(float);
+
 	const Zeni::Collision::Sphere & get_body() const;
 
 	// Level 2 (or whatever)
