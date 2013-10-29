@@ -22,7 +22,6 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 
 bool playerOnKey(const SDL_KeyboardEvent &event, Vector3f &vector, Vector3f &axis, Quaternion orientation) {
 	if (event.type == SDL_KEYDOWN) {
-		cout << "                    " << vector.z << endl;
 		if (axis.z == 0.0f) {
 			vector = orientation * axis;
 			vector.z = 0.0f;
