@@ -35,7 +35,8 @@ private:
 
 	bool m_moved;
 
-	Projector3D projector;
+	Projector3D projector3;
+	Projector2D projector2;
 };
 
 #endif

@@ -22,9 +22,12 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 
 bool playerOnKey(const SDL_KeyboardEvent &event, Vector3f &vector, Vector3f &axis, Quaternion orientation) {
 	if (event.type == SDL_KEYDOWN) {
-		if (vector.x == 0.0f && vector.y == 0.0f && vector.z == 0.0f) {
+		cout << "                    " << vector.z << endl;
+		if (axis.z == 0.0f) {
 			vector = orientation * axis;
-
+			vector.z = 0.0f;
+		}
+		else {
 			vector.z = axis.z;
 		}
 	}
@@ -36,49 +39,51 @@ bool playerOnKey(const SDL_KeyboardEvent &event, Vector3f &vector, Vector3f &axi
 	return true;
 }
 
+bool Player::on_key(const SDL_KeyboardEvent &event) {
+	if      (event.keysym.sym == SDLK_w) {
+		Vector3f forward = Vector3f(1.0, 0.0, 0.0);
+		return playerOnKey(event, forwardVector, forward, camera.orientation);
+	}
+
+	else if (event.keysym.sym == SDLK_a) {
+		Vector3f left = Vector3f(0.0, 1.0, 0.0);
+		return playerOnKey(event, leftVector, left, camera.orientation);
+	}
+
+	else if (event.keysym.sym == SDLK_s) {
+		Vector3f back = Vector3f(-1.0, 0.0, 0.0);
+		return playerOnKey(event, backVector, back, camera.orientation);
+	}
+
+	else if (event.keysym.sym == SDLK_d) {
+		Vector3f right = Vector3f(0.0, -1.0, 0.0);
+		return playerOnKey(event, rightVector, right, camera.orientation);
+	}
+
+	else if (event.keysym.sym == SDLK_q) {
+		Vector3f up = Vector3f(0.0, 0.0, 1.0);
+		return playerOnKey(event, upVector, up, camera.orientation);
+	}
+
+	else if (event.keysym.sym == SDLK_e) {
+		Vector3f down = Vector3f(0.0, 0.0, -1.0);
+		return playerOnKey(event, downVector, down, camera.orientation);
+	}
+
+	return false;
+}
+
 Vector3f Player::get_next_velocity() {
 	Vector3f wasd = forwardVector + leftVector + backVector + rightVector;
 	Vector3f updown = upVector + downVector;
 
 	Vector3f next_velocity = (wasd.normalized() * wasdSpeed) + (updown * updownSpeed);
 
-	cout << next_velocity.x << " " << next_velocity.y << " " << next_velocity.z << endl;
+	cout << "W " << wasd.x << " " << wasd.y << " " << wasd.z << endl;
+	cout << "U " << updown.x << " " << updown.y << " " << updown.z << endl;
+	cout << "N " << next_velocity.x << " " << next_velocity.y << " " << next_velocity.z << endl;
 
 	return next_velocity;
-}
-
-bool Player::on_key(const SDL_KeyboardEvent &event) {
-	if      (event.keysym.sym == SDLK_w) {
-		Vector3f forward = Vector3f(1, 0, 0);
-		return playerOnKey(event, forwardVector, forward, camera.orientation);
-	}
-
-	else if (event.keysym.sym == SDLK_a) {
-		Vector3f left = Vector3f(0, 1, 0);
-		return playerOnKey(event, leftVector, left, camera.orientation);
-	}
-
-	else if (event.keysym.sym == SDLK_s) {
-		Vector3f back = Vector3f(-1, 0, 0);
-		return playerOnKey(event, backVector, back, camera.orientation);
-	}
-
-	else if (event.keysym.sym == SDLK_d) {
-		Vector3f right = Vector3f(0, -1, 0);
-		return playerOnKey(event, rightVector, right, camera.orientation);
-	}
-
-	else if (event.keysym.sym == SDLK_q) {
-		Vector3f up = Vector3f(0, 0, 1);
-		return playerOnKey(event, upVector, up, camera.orientation);
-	}
-
-	else if (event.keysym.sym == SDLK_e) {
-		Vector3f down = Vector3f(0, 0, -1);
-		return playerOnKey(event, downVector, down, camera.orientation);
-	}
-
-	return false;
 }
 
 // Level 2

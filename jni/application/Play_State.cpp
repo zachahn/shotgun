@@ -7,6 +7,10 @@ using namespace Zeni::Collision;
 #include <iostream>
 using namespace std;
 
+Vector2f tr2(0.0f, 0.0f);
+Vector2f bl2(854.0f, 480.0f);
+pair<Point2f, Point2f> resolution2 = make_pair(tr2, bl2);
+
 Play_State::Play_State()
 	: m_player(Camera(Point3f(0.0f, 0.0f, 50.0f)
 	, Quaternion()
@@ -46,6 +50,7 @@ void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 }
 
 void Play_State::perform_logic() {
+	projector2 = Projector2D(resolution2, get_Video().get_viewport());
 	// const pair<Point2i, Point2i> proj_res = make_pair(
 	// 	  Point2i(0, 0)
 	// 	, Point2i(854, 480)
@@ -119,6 +124,14 @@ void Play_State::render() {
 		  "CRATE.PNG"
 		, Point2f(0.0f, 0.0f)
 		, Point2f(1000.0f, 1000.0f)
+	);
+
+	get_Video().set_2d(resolution2, true);
+
+	render_image(
+		  "CRATE.PNG"
+		, bl2/2.0f - Point2f(10.0f, 10.0f)
+		, bl2/2.0f + Point2f(10.0f, 10.0f)
 	);
 }
 
