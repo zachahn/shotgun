@@ -53,14 +53,8 @@ void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 
 void Play_State::perform_logic() {
 	projector2 = Projector2D(resolution2, get_Video().get_viewport());
-	const pair<Point2i, Point2i> proj_res = make_pair(
-		  tr3
-		, bl3
-	);
-	projector3 = Projector3D(
-		  m_player.get_camera()
-		, proj_res
-	);
+	const pair<Point2i, Point2i> proj_res = make_pair(tr3, bl3);
+	projector3 = Projector3D(m_player.get_camera(), proj_res);
 
 	const Time_HQ current_time = get_Timer_HQ().get_time();
 	float processing_time = float(current_time.get_seconds_since(time_passed));
