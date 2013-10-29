@@ -128,6 +128,8 @@ void Play_State::render() {
 		(*b)->render();
 	}
 
+	m_player.render();
+
 	// 2D STUFF
 
 	get_Video().set_2d(resolution2, true);

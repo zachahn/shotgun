@@ -11,6 +11,7 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 	, m_end_point_b(end_point_b_)
 	, m_radius(radius_)
 	, m_is_on_ground(false)
+	, model("models/eshield.3ds")
 {
 	camera.fov_rad = Zeni::Global::pi / 3.0f;
 
@@ -86,6 +87,12 @@ Vector3f Player::get_next_velocity() {
 	// cout << "N " << next_velocity.x << " " << next_velocity.y << " " << next_velocity.z << endl;
 
 	return next_velocity;
+}
+
+void Player::render() {
+	model.set_translate(camera.position + Vector3f(40.0f, 40.0f, 0.0f));
+	model.set_scale(Vector3f(10.0f, 10.0f, 10.0f));
+	model.render();
 }
 
 const Zeni::Camera & Player::get_camera() const {

@@ -20,6 +20,8 @@ public:
 	float last_shot_fired;
 	float shooting_interval;
 
+	Model model;
+
 	Player(const Zeni::Camera &camera_,
 		   const Zeni::Vector3f &end_point_b_,
 		   const float radius_);
@@ -27,6 +29,8 @@ public:
 	bool on_key(const SDL_KeyboardEvent &event);
 
 	Vector3f get_next_velocity();
+
+	void render();
 
 	// Level 1
 	const Zeni::Camera & get_camera() const;
