@@ -106,17 +106,40 @@ void Player::set_position(const Point3f &position_) {
 }
 
 void Player::adjust_pitch(const float &phi) {
-	const Quaternion backup = camera.orientation;
-	const Vector3f backup_up = camera.get_up();
+	// const Quaternion backup = camera.orientation;
+	// const Vector3f backup_up = camera.get_up();
 
-	camera.adjust_pitch(phi);
+	// camera.adjust_pitch(phi);
 
-	if (camera.get_up().k < 0.0f && backup_up.k >= 0.0f)
-		camera.orientation = backup;
+	// if (camera.get_up().k < 0.0f && backup_up.k >= 0.0f)
+	// 	camera.orientation = backup;
+
+	// camera.position += camera.get_left().get_ij().normalized() * distance;
+	// camera.position.z += phi;
+	// camera.look_at(center, Vector3f(0.0f, 1.0f, 0.0f));
+
+
+
+	Quaternion yz = Quaternion::Axis_Angle(Vector3f(0.0f, 1.0f, 0.0f), phi/1000.0f) * camera.orientation;
+
+	Vector3f offset(-100.0f, 0.0f, 0.0);
+	camera.position = center + (yz * offset);
+	camera.look_at(center);
 }
 
 void Player::turn_left_xy(const float &theta) {
-	camera.turn_left_xy(theta);
+	// camera.turn_left_xy(theta);
+	// camera.position.x += theta;
+	// camera.move_left_xy(theta);
+	// camera.look_at(center);
+
+
+	// camera.turn_left_xy(theta / 100.0f);
+	Quaternion xy = Quaternion::Axis_Angle(Vector3f(0.0f, 0.0f, -1.0f), theta/1000.0f) * camera.orientation;
+
+	Vector3f offset(-100.0f, 0.0f, 0.0);
+	camera.position = center + (xy * offset);
+	camera.look_at(center);
 }
 
 const Zeni::Collision::Sphere & Player::get_body() const {
