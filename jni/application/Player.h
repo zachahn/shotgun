@@ -14,6 +14,9 @@ public:
 	Vector3f upVector;
 	Vector3f downVector;
 
+	float wasdSpeed;
+	float updownSpeed;
+
 	Player(const Zeni::Camera &camera_,
 		   const Zeni::Vector3f &end_point_b_,
 		   const float radius_);

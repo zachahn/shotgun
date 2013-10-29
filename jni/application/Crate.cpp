@@ -77,7 +77,7 @@ void Crate::look_at(Vector3f pos) {
 	pxy.x = pos.x;
 	pxy.y = pos.y;
 
-	dq = dq.Vector3f_to_Vector3f(cxy, pxy);
+	dq = dq.Vector3f_to_Vector3f(pxy, cxy);
 	m_rotation = dq;
 }
 

@@ -59,7 +59,7 @@ void Play_State::perform_logic() {
 	float processing_time = float(current_time.get_seconds_since(time_passed));
 	time_passed = current_time;
 
-	const Vector3f velocity = m_player.get_next_velocity() * 50.0f;
+	const Vector3f velocity = m_player.get_next_velocity();
 	const Vector3f x_vel = velocity.get_i();
 	const Vector3f y_vel = velocity.get_j();
 	const Vector3f z_vel = velocity.get_k();

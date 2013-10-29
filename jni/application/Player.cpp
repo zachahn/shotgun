@@ -14,6 +14,9 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 {
 	camera.fov_rad = Zeni::Global::pi / 3.0f;
 
+	wasdSpeed = 200.0f;
+	updownSpeed = 100.0f;
+
 	create_body();
 }
 
@@ -37,7 +40,11 @@ Vector3f Player::get_next_velocity() {
 	Vector3f wasd = forwardVector + leftVector + backVector + rightVector;
 	Vector3f updown = upVector + downVector;
 
-	return wasd.normalized() + updown;
+	Vector3f next_velocity = (wasd.normalized() * wasdSpeed) + (updown * updownSpeed);
+
+	cout << next_velocity.x << " " << next_velocity.y << " " << next_velocity.z << endl;
+
+	return next_velocity;
 }
 
 bool Player::on_key(const SDL_KeyboardEvent &event) {
