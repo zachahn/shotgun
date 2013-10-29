@@ -21,7 +21,7 @@ Play_State::Play_State()
 	, 11.0f)
 {
 	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f)));
-	crates.push_back(new Crate(Point3f(12.0f, 12.0f, 0.0f)));
+	crates.push_back(new Crate(Point3f(100.0f, 200.0f, 0.0f)));
 
 	set_pausable(true);
 }
@@ -102,31 +102,24 @@ void Play_State::perform_logic() {
 
 	const Point3f &position = m_player.get_camera().position;
 	for (std::vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
-		(*c)->look_at(position);
+		// (*c)->look_at(position);
 	}
 }
 
 void Play_State::render() {
-	const pair<Point2i, Point2i> proj_res = make_pair(
-		  tr3
-		, get_Video().get_render_target_size()
-	);
+	get_Video().set_clear_Color(get_Colors()["white"]);
 
-	get_Video().set_3d_view(
-		  m_player.get_camera()
-		, proj_res
-	);
-	// get_Video().set_3d(m_player.get_camera());
+	// 3D STUFF
+
+	const pair<Point2i, Point2i> proj_res = make_pair(tr3, get_Video().get_render_target_size());
+
+	get_Video().set_3d_view(m_player.get_camera(), proj_res);
 
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 		(*c)->render();
 	}
 
-	render_image(
-		  "CRATE.PNG"
-		, Point2f(0.0f, 0.0f)
-		, Point2f(1000.0f, 1000.0f)
-	);
+	// 2D STUFF
 
 	get_Video().set_2d(resolution2, true);
 
