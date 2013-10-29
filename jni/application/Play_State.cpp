@@ -9,6 +9,8 @@ using namespace std;
 
 Vector2f tr2(0.0f, 0.0f);
 Vector2f bl2(854.0f, 480.0f);
+Point2i tr3(0, 0);
+Point2i bl3(854, 480);
 pair<Point2f, Point2f> resolution2 = make_pair(tr2, bl2);
 
 Play_State::Play_State()
@@ -51,14 +53,14 @@ void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 
 void Play_State::perform_logic() {
 	projector2 = Projector2D(resolution2, get_Video().get_viewport());
-	// const pair<Point2i, Point2i> proj_res = make_pair(
-	// 	  Point2i(0, 0)
-	// 	, Point2i(854, 480)
-	// );
-	// projector = Projector3D(
-	// 	  m_player.get_camera()
-	// 	, proj_res
-	// );
+	const pair<Point2i, Point2i> proj_res = make_pair(
+		  tr3
+		, bl3
+	);
+	projector3 = Projector3D(
+		  m_player.get_camera()
+		, proj_res
+	);
 
 	const Time_HQ current_time = get_Timer_HQ().get_time();
 	float processing_time = float(current_time.get_seconds_since(time_passed));
@@ -105,16 +107,16 @@ void Play_State::perform_logic() {
 }
 
 void Play_State::render() {
-	// const pair<Point2i, Point2i> proj_res = make_pair(
-	// 	  Point2i(0, 0)
-	// 	, Point2i(854, 480)
-	// );
+	const pair<Point2i, Point2i> proj_res = make_pair(
+		  tr3
+		, get_Video().get_render_target_size()
+	);
 
-	// get_Video().set_3d_view(
-	// 	  m_player.get_camera()
-	// 	, proj_res
-	// );
-	get_Video().set_3d(m_player.get_camera());
+	get_Video().set_3d_view(
+		  m_player.get_camera()
+		, proj_res
+	);
+	// get_Video().set_3d(m_player.get_camera());
 
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 		(*c)->render();
