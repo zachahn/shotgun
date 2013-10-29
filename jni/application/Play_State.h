@@ -3,6 +3,7 @@
 
 #include "Crate.h"
 #include "Player.h"
+#include "Bullet.h"
 #include <Zeni/Gamestate.h>
 #include <Zeni/Timer.h>
 #include <vector>
@@ -17,6 +18,7 @@ public:
 	void on_push();
 
 	void on_key(const SDL_KeyboardEvent &event);
+	void on_mouse_button(const SDL_MouseButtonEvent &event);
 	void on_mouse_motion(const SDL_MouseMotionEvent &event);
 
 	void perform_logic();
@@ -29,11 +31,13 @@ private:
 	Zeni::Time_HQ time_passed;
 
 	vector<Crate*> crates;
+	vector<Bullet*> player_bullets;
+	vector<Bullet*> enemy_bullets;
 
-	Crate m_crate;
 	Player m_player;
 
 	bool m_moved;
+	bool firing;
 
 	Projector3D projector3;
 	Projector2D projector2;

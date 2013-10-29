@@ -17,6 +17,9 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 	wasdSpeed = 200.0f;
 	updownSpeed = 100.0f;
 
+	last_shot_fired = 0.0f;
+	shooting_interval = 0.2f;
+
 	create_body();
 }
 
@@ -78,11 +81,15 @@ Vector3f Player::get_next_velocity() {
 
 	Vector3f next_velocity = (wasd.normalized() * wasdSpeed) + (updown * updownSpeed);
 
-	cout << "W " << wasd.x << " " << wasd.y << " " << wasd.z << endl;
-	cout << "U " << updown.x << " " << updown.y << " " << updown.z << endl;
-	cout << "N " << next_velocity.x << " " << next_velocity.y << " " << next_velocity.z << endl;
+	// cout << "W " << wasd.x << " " << wasd.y << " " << wasd.z << endl;
+	// cout << "U " << updown.x << " " << updown.y << " " << updown.z << endl;
+	// cout << "N " << next_velocity.x << " " << next_velocity.y << " " << next_velocity.z << endl;
 
 	return next_velocity;
+}
+
+const Zeni::Camera & Player::get_camera() const {
+	return camera;
 }
 
 // Level 2
@@ -121,6 +128,15 @@ void Player::jump() {
 void Player::step(const float &time_step) {
 	camera.position += time_step * m_velocity;
 	create_body();
+}
+
+bool Player::fire(float time) {
+	if (time >= last_shot_fired + shooting_interval) {
+		last_shot_fired = time;
+		return true;
+	}
+
+	return false;
 }
 
 void Player::create_body() {

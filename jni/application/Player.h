@@ -17,6 +17,9 @@ public:
 	float wasdSpeed;
 	float updownSpeed;
 
+	float last_shot_fired;
+	float shooting_interval;
+
 	Player(const Zeni::Camera &camera_,
 		   const Zeni::Vector3f &end_point_b_,
 		   const float radius_);
@@ -26,7 +29,7 @@ public:
 	Vector3f get_next_velocity();
 
 	// Level 1
-	const Zeni::Camera & get_camera() const {return camera;}
+	const Zeni::Camera & get_camera() const;
 
 	// Level 2
 	void set_position(const Zeni::Point3f &position);
@@ -45,6 +48,8 @@ public:
 	void jump();
 
 	void step(const float &time_step);
+
+	bool fire(float time);
 
 private:
 	void create_body();

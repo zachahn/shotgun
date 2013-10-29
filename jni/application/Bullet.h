@@ -12,8 +12,9 @@ using namespace Zeni;
 class Bullet {
 public:
 	Bullet(
-		const Zeni::Point3f &corner_ = Zeni::Point3f(0.0f, 0.0f, 0.0f),
-		const Zeni::Vector3f &scale_ = Zeni::Vector3f(5.0f, 5.0f, 5.0f)
+		const Zeni::Vector3f &direction_,
+		const Zeni::Point3f &corner_,
+		const Zeni::Vector3f &scale_ = Zeni::Vector3f(1.0f, 1.0f, 1.0f)
 	);
 	Bullet(const Bullet &rhs);
 	Bullet & operator=(const Bullet &rhs);
@@ -25,6 +26,11 @@ public:
 
 	const Zeni::Collision::Sphere & get_body() const;
 
+	// Level 2 (or whatever)
+	Zeni::Point3f center;
+	Zeni::Vector3f direction;
+	float speed;
+
 private:
 	void create_body();
 
@@ -33,7 +39,6 @@ private:
 	static unsigned long instance_count;
 
 	// Level 2
-	Zeni::Point3f center;
 	Zeni::Vector3f scale;
 
 	// Level 3

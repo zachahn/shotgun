@@ -9,14 +9,19 @@ using namespace Zeni::Collision;
 using namespace std;
 
 
-Bullet::Bullet(const Point3f &corner_, const Vector3f &scale_)
+Bullet::Bullet(const Vector3f &direction_, const Point3f &corner_, const Vector3f &scale_)
 	: center(corner_)
 	, scale(scale_)
+	, direction(direction_)
 {
 	if (! instance_count) {
-		model = new Model("models/Bullet.3ds");
+		model = new Model("models/eshield.3ds");
 	}
 	++instance_count;
+
+	direction.normalized();
+
+	speed = 400.0f;
 
 	create_body();
 }
