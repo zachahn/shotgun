@@ -45,6 +45,10 @@ The following things are unsupported:
     <filepath>textures/eshield.png</filepath>
     <tile>1</tile>
   </ESHIELD.PNG>
+  <PLAYER.PNG>
+    <filepath>textures/player.png</filepath>
+    <tile>1</tile>
+  </PLAYER.PNG>
   <!--
   <one>
     <is_sprite>0</is_sprite>
