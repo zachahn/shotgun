@@ -21,8 +21,8 @@ Play_State::Play_State()
 	  )
 	, firing(false)
 {
-	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f)));
-	crates.push_back(new Crate(Point3f(100.0f, 200.0f, 0.0f)));
+	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f), Point3f(10.0f, 10.0f, 10.0f)));
+	crates.push_back(new Crate(Point3f(100.0f, 200.0f, 0.0f), Point3f(10.0f, 10.0f, 10.0f)));
 
 	set_pausable(true);
 }

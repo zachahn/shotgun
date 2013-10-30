@@ -49,6 +49,23 @@ The following things are unsupported:
     <filepath>textures/player.png</filepath>
     <tile>1</tile>
   </PLAYER.PNG>
+
+  <POWERFUL.PNG>
+    <filepath>textures/powerful.png</filepath>
+    <tile>1</tile>
+  </POWERFUL.PNG>
+  <RANGE.PNG>
+    <filepath>textures/range.png</filepath>
+    <tile>1</tile>
+  </RANGE.PNG>
+  <REGULAR.PNG>
+    <filepath>textures/regular.png</filepath>
+    <tile>1</tile>
+  </REGULAR.PNG>
+  <SUPER.PNG>
+    <filepath>textures/super.png</filepath>
+    <tile>1</tile>
+  </SUPER.PNG>
   <!--
   <one>
     <is_sprite>0</is_sprite>
