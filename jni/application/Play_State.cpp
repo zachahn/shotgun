@@ -55,9 +55,10 @@ void Play_State::on_mouse_button(const SDL_MouseButtonEvent &event) {
 
 void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 	// m_player.adjust_pitch(event.yrel / 500.0f);
-	m_player.adjust_pitch(event.yrel);
 	// m_player.turn_left_xy(-event.xrel / 500.0f);
-	m_player.turn_left_xy(event.xrel);
+	// m_player.adjust_pitch(event.yrel);
+	// m_player.turn_left_xy(event.xrel);
+	m_player.on_mouse_motion(event.xrel, event.yrel);
 }
 
 void Play_State::perform_logic() {
@@ -117,9 +118,9 @@ void Play_State::perform_logic() {
 
 void Play_State::render() {
 	// 3D STUFF
-
 	const pair<Point2i, Point2i> proj_res = make_pair(tr3, get_Video().get_render_target_size());
 
+	m_player.apply_camera();
 	get_Video().set_3d_view(m_player.get_camera(), proj_res);
 
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {

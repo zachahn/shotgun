@@ -24,6 +24,9 @@ public:
 	Point3f center;
 	Quaternion direction;
 
+	Quaternion camera_look_orientation;
+	Vector3f camera_look_position;
+
 	Player(const Zeni::Camera &camera_,
 		   const Zeni::Vector3f &end_point_b_,
 		   const float radius_);
@@ -34,6 +37,8 @@ public:
 
 	void render();
 
+	void apply_camera();
+
 	// Level 1
 	const Zeni::Camera & get_camera() const;
 
@@ -42,6 +47,8 @@ public:
 
 	void adjust_pitch(const float &phi);
 	void turn_left_xy(const float &theta);
+
+	void on_mouse_motion(const float &x, const float &y);
 
 	// Level 3
 	const Zeni::Collision::Sphere & get_body() const;

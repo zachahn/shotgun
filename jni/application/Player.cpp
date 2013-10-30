@@ -20,7 +20,8 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 
 	last_shot_fired = 0.0f;
 	shooting_interval = 0.2f;
-
+	on_mouse_motion(0.0f, 0.0f);
+	apply_camera();
 	create_body();
 }
 
@@ -139,6 +140,27 @@ void Player::turn_left_xy(const float &theta) {
 
 	Vector3f offset(-100.0f, 0.0f, 0.0);
 	camera.position = center + (xy * offset);
+	camera.look_at(center);
+}
+
+void Player::on_mouse_motion(const float &x, const float &y) {
+	cout << "mouse motion" << endl;
+	Quaternion originalOrientation = camera.orientation;
+	Vector3f originalPosition = camera.position;
+
+	adjust_pitch(y);
+	turn_left_xy(x);
+
+	camera_look_orientation = camera.orientation;
+	camera_look_position = camera.position - center;
+
+	camera.orientation = originalOrientation;
+	camera.position = originalPosition;
+}
+
+void Player::apply_camera() {
+	// camera.orientation = camera_look_orientation;
+	camera.position    = center + camera_look_position;
 	camera.look_at(center);
 }
 
