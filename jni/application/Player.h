@@ -20,9 +20,19 @@ public:
 	float last_shot_fired;
 	float shooting_interval;
 
+	float shield_start;
+	float shield_show_length;
+
+	int damage;
+	int health;
+
+	Model shield;
 	Model model;
 	Point3f center;
 	Quaternion direction;
+
+	Quaternion camera_xy;
+	Quaternion camera_xz;
 
 	Quaternion camera_look_orientation;
 	Vector3f camera_look_position;
@@ -63,6 +73,8 @@ public:
 	void step(const float &time_step);
 
 	bool fire(float time);
+
+	void hit(int damage);
 
 private:
 	void create_body();

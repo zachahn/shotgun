@@ -17,14 +17,21 @@ Play_State::Play_State()
 	: m_player(
 		  Camera(Point3f(0.0f, 0.0f, 50.0f), Quaternion(), 1.0f, 10000.0f)
 		, Vector3f(0.0f, 0.0f, -39.0f)
-		, 30.0f
+		, 15.0f
 	  )
 	, firing(false)
 {
-	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f), Point3f(10.0f, 10.0f, 10.0f)));
-	crates.push_back(new Crate(Point3f(100.0f, 200.0f, 0.0f), Point3f(10.0f, 10.0f, 10.0f)));
+	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f), Crate::POWERFUL, Crate::SMALL));
+	crates.push_back(new Crate(Point3f(100.0f, 200.0f, 0.0f), Crate::SUPER, Crate::BIG));
+	crates.push_back(new Crate(Point3f(300.0f, 500.0f, 0.0f), Crate::RANGE, Crate::HUGE));
 
 	set_pausable(true);
+
+	get_Video().set_ambient_lighting(Color(1.0f, 0.0f, 0.0f, 0.0f));
+
+	get_Video().set_Material(m);
+
+	get_Video().set_Light(0, light0);
 }
 
 Play_State::~Play_State() {
@@ -34,7 +41,7 @@ Play_State::~Play_State() {
 void Play_State::on_push() {
 	get_Window().set_mouse_state(Window::MOUSE_RELATIVE);
 
-	get_Video().set_clear_Color(get_Colors()["white"]);
+	// get_Video().set_clear_Color(get_Colors()["white"]);
 }
 
 void Play_State::on_key(const SDL_KeyboardEvent &event) {
@@ -81,7 +88,17 @@ void Play_State::perform_logic() {
 
 	if (firing) {
 		if (m_player.fire(get_Timer().get_seconds())) {
-			player_bullets.push_back(new Bullet(m_player.get_camera().get_forward(), m_player.center));
+			player_bullets.push_back(
+				new Bullet(
+					m_player.get_camera().get_forward(),
+					m_player.center + Vector3f(
+						(float(rand() % 100)/10.0f) - 5.0f,
+						(float(rand() % 100)/10.0f) - 5.0f,
+						(float(rand() % 100)/10.0f) - 5.0f
+					),
+					m_player.damage
+				)
+			);
 		}
 	}
 
@@ -110,10 +127,17 @@ void Play_State::perform_logic() {
 		}
 	}
 
-	const Point3f &position = m_player.center;
-	for (std::vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
-		// (*c)->look_at(position);
+	const Vector3f &position = m_player.center;
+	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
+		Vector3f v = position - (*c)->center;
+		if (v.magnitude() <= (*c)->range) {
+			if ((*c)->fire(get_Timer().get_seconds())) {
+				enemy_bullets.push_back(new Bullet(v.normalized(), (*c)->center, (*c)->damage));
+			}
+		}
 	}
+
+	// light0.position = m_player.center;
 }
 
 void Play_State::render() {
@@ -121,6 +145,8 @@ void Play_State::render() {
 	const pair<Point2i, Point2i> proj_res = make_pair(tr3, get_Video().get_render_target_size());
 
 	m_player.apply_camera();
+
+	get_Video().set_lighting(true);
 	get_Video().set_3d_view(m_player.get_camera(), proj_res);
 
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
@@ -131,14 +157,18 @@ void Play_State::render() {
 		(*b)->render();
 	}
 
+	for (std::vector<Bullet*>::iterator b = enemy_bullets.begin(); b != enemy_bullets.end(); ++b) {
+		(*b)->render();
+	}
+
 	m_player.render();
 
 	// 2D STUFF
-
+	get_Video().set_lighting(false);
 	get_Video().set_2d(resolution2, true);
 
 	render_image(
-		  "CRATE.PNG"
+		  "crosshair"
 		, bl2/2.0f - Point2f(10.0f, 10.0f)
 		, bl2/2.0f + Point2f(10.0f, 10.0f)
 	);
@@ -157,7 +187,7 @@ void Play_State::partial_step(const float &time_step, const Vector3f &velocity) 
 
 		for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 			if ((*c)->get_body().intersects((*b)->get_body())) {
-				(*c)->collide();
+				(*c)->hit((*b)->damage);
 				collided = true;
 				break;
 			}
@@ -172,6 +202,20 @@ void Play_State::partial_step(const float &time_step, const Vector3f &velocity) 
 		}
 	}
 
+	for (vector<Bullet*>::iterator b = enemy_bullets.begin(); b != enemy_bullets.end();)
+	{
+		(*b)->fly(time_step);
+
+		if ((*b)->get_body().intersects(m_player.get_body())) {
+			m_player.hit((*b)->damage);
+			delete (*b);
+			b = enemy_bullets.erase(b);
+		}
+		else {
+			++b;
+		}
+	}
+
 	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 		/** If collision with the crate has occurred, roll things back **/
 		if ((*c)->get_body().intersects(m_player.get_body())) {
@@ -180,6 +224,8 @@ void Play_State::partial_step(const float &time_step, const Vector3f &velocity) 
 				(*c)->collide();
 				m_moved = false;
 			}
+
+			// m_player.hit(get_Timer().get_seconds());
 
 			m_player.set_position(backup_position);
 

@@ -11,18 +11,28 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 	, m_end_point_b(end_point_b_)
 	, m_radius(radius_)
 	, m_is_on_ground(false)
-	, model("models/eshield.3ds")
+	, shield("models/player-shield.3ds")
+	, model("models/player.3ds")
 {
 	camera.fov_rad = Zeni::Global::pi / 3.0f;
 
-	wasdSpeed = 200.0f;
-	updownSpeed = 100.0f;
+	wasdSpeed = 50.0f;
+	updownSpeed = 30.0f;
 
 	last_shot_fired = 0.0f;
 	shooting_interval = 0.2f;
+
+	shield_start = 0.0f;
+	shield_show_length = 0.1f;
+
+	damage = 500;
+	health = 10000;
+
 	on_mouse_motion(0.0f, 0.0f);
 	apply_camera();
 	create_body();
+
+	camera_xy = camera_xz = camera.orientation.normalized();
 }
 
 bool playerOnKey(const SDL_KeyboardEvent &event, Vector3f &vector, Vector3f &axis, Quaternion orientation) {
@@ -94,6 +104,12 @@ void Player::render() {
 	model.set_translate(center);
 	model.set_scale(Vector3f(m_radius, m_radius, m_radius));
 	model.render();
+
+	if (get_Timer().get_seconds() <= shield_start + shield_show_length) {
+		shield.set_translate(center);
+		shield.set_scale(Vector3f(m_radius, m_radius, m_radius));
+		shield.render();
+	}
 }
 
 const Zeni::Camera & Player::get_camera() const {
@@ -120,12 +136,12 @@ void Player::adjust_pitch(const float &phi) {
 	// camera.look_at(center, Vector3f(0.0f, 1.0f, 0.0f));
 
 
+	camera_xz = Quaternion::Axis_Angle(Vector3f(0.0f, 1.0f, 0.0f), phi/1000.0f) * camera_xz;
+	// Quaternion yz_ = Quaternion::Axis_Angle(Vector3f(0.0f, 1.0f, 0.0f), phi/1000.0f) * camera.orientation;
 
-	Quaternion yz = Quaternion::Axis_Angle(Vector3f(0.0f, 1.0f, 0.0f), phi/1000.0f) * camera.orientation;
-
-	Vector3f offset(-100.0f, 0.0f, 0.0);
-	camera.position = center + (yz * offset);
-	camera.look_at(center);
+	// Vector3f offset(-100.0f, 0.0f, 0.0);
+	// camera.position = center + (yz_ * offset);
+	// camera.look_at(center);
 }
 
 void Player::turn_left_xy(const float &theta) {
@@ -136,31 +152,35 @@ void Player::turn_left_xy(const float &theta) {
 
 
 	// camera.turn_left_xy(theta / 100.0f);
-	Quaternion xy = Quaternion::Axis_Angle(Vector3f(0.0f, 0.0f, -1.0f), theta/1000.0f) * camera.orientation;
+	camera_xy = Quaternion::Axis_Angle(Vector3f(0.0f, 0.0f, -1.0f), theta/1000.0f) * camera_xy;// * camera.orientation;
 
-	Vector3f offset(-100.0f, 0.0f, 0.0);
-	camera.position = center + (xy * offset);
-	camera.look_at(center);
+	// Vector3f offset(-100.0f, 0.0f, 0.0);
+	// camera.position = center + (camera_xy * offset);
+	// camera.look_at(center);
 }
 
 void Player::on_mouse_motion(const float &x, const float &y) {
-	cout << "mouse motion" << endl;
-	Quaternion originalOrientation = camera.orientation;
-	Vector3f originalPosition = camera.position;
+	// Quaternion originalOrientation = camera.orientation;
+	// Vector3f originalPosition = camera.position;
 
 	adjust_pitch(y);
 	turn_left_xy(x);
 
-	camera_look_orientation = camera.orientation;
-	camera_look_position = camera.position - center;
+	// camera_look_orientation = camera.orientation;
+	// camera_look_position = camera.position - center;
 
-	camera.orientation = originalOrientation;
-	camera.position = originalPosition;
+	// camera.orientation = originalOrientation;
+	// camera.position = originalPosition;
+	Vector3f offset(-100.0f, 0.0f, 0.0);
+	// camera_look_position = center + (camera_xy * camera_xz * offset);
+	// camera.look_at(center);
 }
 
 void Player::apply_camera() {
 	// camera.orientation = camera_look_orientation;
-	camera.position    = center + camera_look_position;
+	// camera.position    = center + camera_look_position;
+	Vector3f offset(-100.0f, 0.0f, 0.0);
+	camera.position = center + (camera_xy * camera_xz * offset);
 	camera.look_at(center);
 }
 
@@ -205,6 +225,11 @@ bool Player::fire(float time) {
 	}
 
 	return false;
+}
+
+void Player::hit(int damage) {
+	health -= damage;
+	shield_start = get_Timer().get_seconds();
 }
 
 void Player::create_body() {

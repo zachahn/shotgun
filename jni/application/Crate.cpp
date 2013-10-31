@@ -8,40 +8,73 @@ using namespace Zeni::Collision;
 #include <iostream>
 using namespace std;
 
-
-Crate::Crate(const Point3f &corner_, const Vector3f &scale_, const Quaternion &rotation_)
+Crate::Crate(const Point3f &center_, const int &type_, const int &size_)
 	: m_source(new Sound_Source(get_Sounds()["collide"]))
-	, m_corner(corner_)
-	, m_scale(scale_)
-	, m_rotation(rotation_)
+	, center(center_)
+	, type(type_)
+	, health(size_)
 {
-	if (! m_instance_count) {
-		powerful_model = new Model("models/planet-powerful.3ds");
-		range_model    = new Model("models/planet-range.3ds");
-		regular_model  = new Model("models/planet-regular.3ds");
-		super_model    = new Model("models/planet-super.3ds");
-	}
+	init();
 	++m_instance_count;
-
 	create_body();
 }
 
 Crate::Crate(const Crate &rhs)
 	: m_source(new Sound_Source(get_Sounds()["collide"]))
-	, m_corner(rhs.m_corner)
-	, m_scale(rhs.m_scale)
-	, m_rotation(rhs.m_rotation)
+	, center(rhs.center)
+	, radius(rhs.radius)
+	, type(rhs.type)
+	, health(rhs.health)
 {
+	init();
 	++m_instance_count;
 
 	create_body();
 }
 
-Crate & Crate::operator=(const Crate &rhs) {
-	m_corner = rhs.m_corner;
-	m_scale = rhs.m_scale;
-	m_rotation = rhs.m_rotation;
+void Crate::init() {
+	calculate_radius();
 
+	if (! m_instance_count) {
+		regular_model  = new Model("models/planet-regular.3ds");
+		powerful_model = new Model("models/planet-powerful.3ds");
+		range_model    = new Model("models/planet-range.3ds");
+		super_model    = new Model("models/planet-super.3ds");
+	}
+
+	if      (POWERFUL == type) {
+		model = powerful_model;
+		range = 150.0f;
+		shooting_interval = 0.25f;
+		damage = 200;
+	}
+	else if (RANGE == type) {
+		model = range_model;
+		range = 250.0f;
+		shooting_interval = 0.25f;
+		damage = 100;
+	}
+	else if (SUPER == type) {
+		model = super_model;
+		range = 220.0f;
+		shooting_interval = 0.25f;
+		damage = 200;
+	}
+	else {
+		model = regular_model;
+		range = 150.0f;
+		type = REGULAR;
+		shooting_interval = 0.2f;
+		damage = 100;
+	}
+}
+
+Crate & Crate::operator=(const Crate &rhs) {
+	center = rhs.center;
+	radius = rhs.radius;
+	type   = rhs.type;
+
+	init();
 	create_body();
 
 	return *this;
@@ -63,14 +96,30 @@ Crate::~Crate() {
 	}
 }
 
+void Crate::calculate_radius() {
+	health = health < 0 ? 0 : health;
+
+	radius = powf(float(health), 0.3333f) + 10.0f;
+
+	scale = Vector3f(radius, radius, radius);
+
+	cout << radius<< endl;
+}
+
 void Crate::render() {
-	const std::pair<Vector3f, float> rotation = m_rotation.get_rotation();
-
-	model = super_model;
-
-	model->set_translate(m_corner);
-	model->set_scale(m_scale);
+	model->set_translate(center);
+	model->set_scale(scale);
 	model->render();
+}
+
+void Crate::hit(int damage) {
+	health -= damage;
+
+	calculate_radius();
+
+	create_body();
+
+	collide();
 }
 
 void Crate::collide() {
@@ -78,24 +127,41 @@ void Crate::collide() {
 		m_source->play();
 }
 
-void Crate::look_at(Vector3f pos) {
-	Vector3f cxy;
-	Vector3f pxy;
-	Quaternion dq;
+bool Crate::fire(float time) {
+	if (health <= 0) {
+		return false;
+	}
 
-	cxy.x = m_corner.x;
-	cxy.y = m_corner.y;
-	pxy.x = pos.x;
-	pxy.y = pos.y;
+	if (time >= last_shot_fired + shooting_interval) {
+		last_shot_fired = time;
+		return true;
+	}
 
-	dq = dq.Vector3f_to_Vector3f(pxy, cxy);
-	m_rotation = dq;
+	return false;
 }
 
-void Crate::create_body() {
-	m_body = Sphere(m_corner, m_scale.x);
+const Collision::Sphere & Crate::get_body() const {
+	return body;
+}
 
-	m_source->set_position(m_corner + m_rotation * m_scale / 2.0f);
+// void Crate::look_at(Vector3f pos) {
+// 	Vector3f cxy;
+// 	Vector3f pxy;
+// 	Quaternion dq;
+
+// 	cxy.x = center.x;
+// 	cxy.y = center.y;
+// 	pxy.x = pos.x;
+// 	pxy.y = pos.y;
+
+// 	dq = dq.Vector3f_to_Vector3f(pxy, cxy);
+// 	m_rotation = dq;
+// }
+
+void Crate::create_body() {
+	body = Sphere(center, radius);
+
+	m_source->set_position(center);
 }
 
 Model* Crate::powerful_model = 0;
@@ -104,3 +170,7 @@ Model* Crate::regular_model  = 0;
 Model* Crate::super_model    = 0;
 
 unsigned long Crate::m_instance_count = 0lu;
+
+const int Crate::HUGE  = 100000;
+const int Crate::BIG   =  10000;
+const int Crate::SMALL =   5000;

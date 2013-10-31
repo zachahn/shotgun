@@ -14,6 +14,7 @@ public:
 	Bullet(
 		const Zeni::Vector3f &direction_,
 		const Zeni::Point3f &corner_,
+		const int &damage_,
 		const Zeni::Vector3f &scale_ = Zeni::Vector3f(1.0f, 1.0f, 1.0f)
 	);
 	Bullet(const Bullet &rhs);
@@ -32,6 +33,8 @@ public:
 	Zeni::Point3f center;
 	Zeni::Vector3f direction;
 	float speed;
+
+	int damage;
 
 private:
 	void create_body();

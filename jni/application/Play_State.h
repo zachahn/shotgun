@@ -39,6 +39,9 @@ private:
 	bool m_moved;
 	bool firing;
 
+	Light light0;
+	Material m;
+
 	Projector3D projector3;
 	Projector2D projector2;
 };
