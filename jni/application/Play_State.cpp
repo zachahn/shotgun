@@ -61,11 +61,7 @@ void Play_State::on_mouse_button(const SDL_MouseButtonEvent &event) {
 }
 
 void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
-	// m_player.adjust_pitch(event.yrel / 500.0f);
-	// m_player.turn_left_xy(-event.xrel / 500.0f);
-	// m_player.adjust_pitch(event.yrel);
-	// m_player.turn_left_xy(event.xrel);
-	m_player.on_mouse_motion(event.xrel, event.yrel);
+	m_player.on_mouse_motion(float(event.xrel), float(event.yrel));
 }
 
 void Play_State::perform_logic() {

@@ -14,6 +14,8 @@ public:
 	Vector3f upVector;
 	Vector3f downVector;
 
+	bool reset_movement_vectors;
+
 	float wasdSpeed;
 	float updownSpeed;
 

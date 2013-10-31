@@ -20,12 +20,12 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 	updownSpeed = 30.0f;
 
 	last_shot_fired = 0.0f;
-	shooting_interval = 0.2f;
+	shooting_interval = 0.15f;
 
 	shield_start = 0.0f;
-	shield_show_length = 0.1f;
+	shield_show_length = 0.05f;
 
-	damage = 500;
+	damage = 50;
 	health = 10000;
 
 	on_mouse_motion(0.0f, 0.0f);
@@ -33,10 +33,31 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 	create_body();
 
 	camera_xy = camera_xz = camera.orientation.normalized();
+
+	reset_movement_vectors = false;
 }
 
-bool playerOnKey(const SDL_KeyboardEvent &event, Vector3f &vector, Vector3f &axis, Quaternion orientation) {
-	if (event.type == SDL_KEYDOWN) {
+const Vector3f ORIGIN_VECTOR = Vector3f(0.0, 0.0, 0.0);
+const Vector3f FORWARD_AXIS  = Vector3f(1.0, 0.0, 0.0);
+const Vector3f LEFT_AXIS     = Vector3f(0.0, 1.0, 0.0);
+const Vector3f BACK_AXIS     = Vector3f(-1.0, 0.0, 0.0);
+const Vector3f RIGHT_AXIS    = Vector3f(0.0, -1.0, 0.0);
+const Vector3f UP_AXIS       = Vector3f(0.0, 0.0, 1.0);
+const Vector3f DOWN_AXIS     = Vector3f(0.0, 0.0, -1.0);
+
+bool Vector3f_equals_Vector3f(const Vector3f &lhs, const Vector3f &rhs) {
+	if (lhs.x != rhs.x)
+		return false;
+	if (lhs.y != rhs.y)
+		return false;
+	if (lhs.z != rhs.z)
+		return false;
+
+	return true;
+}
+
+bool playerOnKey(bool is_keydown, Vector3f &vector, const Vector3f &axis, Quaternion orientation) {
+	if (is_keydown) {
 		if (axis.z == 0.0f) {
 			vector = orientation * axis;
 			vector.z = 0.0f;
@@ -55,39 +76,59 @@ bool playerOnKey(const SDL_KeyboardEvent &event, Vector3f &vector, Vector3f &axi
 
 bool Player::on_key(const SDL_KeyboardEvent &event) {
 	if      (event.keysym.sym == SDLK_w) {
-		Vector3f forward = Vector3f(1.0, 0.0, 0.0);
-		return playerOnKey(event, forwardVector, forward, camera.orientation);
+		return playerOnKey(event.type == SDL_KEYDOWN, forwardVector, FORWARD_AXIS, camera.orientation);
 	}
 
 	else if (event.keysym.sym == SDLK_a) {
-		Vector3f left = Vector3f(0.0, 1.0, 0.0);
-		return playerOnKey(event, leftVector, left, camera.orientation);
+		return playerOnKey(event.type == SDL_KEYDOWN, leftVector, LEFT_AXIS, camera.orientation);
 	}
 
 	else if (event.keysym.sym == SDLK_s) {
-		Vector3f back = Vector3f(-1.0, 0.0, 0.0);
-		return playerOnKey(event, backVector, back, camera.orientation);
+		return playerOnKey(event.type == SDL_KEYDOWN, backVector, BACK_AXIS, camera.orientation);
 	}
 
 	else if (event.keysym.sym == SDLK_d) {
-		Vector3f right = Vector3f(0.0, -1.0, 0.0);
-		return playerOnKey(event, rightVector, right, camera.orientation);
+		return playerOnKey(event.type == SDL_KEYDOWN, rightVector, RIGHT_AXIS, camera.orientation);
 	}
 
 	else if (event.keysym.sym == SDLK_q) {
-		Vector3f up = Vector3f(0.0, 0.0, 1.0);
-		return playerOnKey(event, upVector, up, camera.orientation);
+		return playerOnKey(event.type == SDL_KEYDOWN, upVector, UP_AXIS, camera.orientation);
 	}
 
 	else if (event.keysym.sym == SDLK_e) {
-		Vector3f down = Vector3f(0.0, 0.0, -1.0);
-		return playerOnKey(event, downVector, down, camera.orientation);
+		return playerOnKey(event.type == SDL_KEYDOWN, downVector, DOWN_AXIS, camera.orientation);
+	}
+
+	else if (event.keysym.sym == SDLK_SPACE) {
+		reset_movement_vectors = event.type == SDL_KEYDOWN;
+		return true;
 	}
 
 	return false;
 }
 
 Vector3f Player::get_next_velocity() {
+	if (reset_movement_vectors) {
+		if (! Vector3f_equals_Vector3f(forwardVector, ORIGIN_VECTOR)) {
+			playerOnKey(true, forwardVector, FORWARD_AXIS, camera.orientation);
+		}
+		if (! Vector3f_equals_Vector3f(leftVector, ORIGIN_VECTOR)) {
+			playerOnKey(true, leftVector, LEFT_AXIS, camera.orientation);
+		}
+		if (! Vector3f_equals_Vector3f(backVector, ORIGIN_VECTOR)) {
+			playerOnKey(true, backVector, BACK_AXIS, camera.orientation);
+		}
+		if (! Vector3f_equals_Vector3f(rightVector, ORIGIN_VECTOR)) {
+			playerOnKey(true, rightVector, RIGHT_AXIS, camera.orientation);
+		}
+		if (! Vector3f_equals_Vector3f(upVector, ORIGIN_VECTOR)) {
+			playerOnKey(true, upVector, UP_AXIS, camera.orientation);
+		}
+		if (! Vector3f_equals_Vector3f(downVector, ORIGIN_VECTOR)) {
+			playerOnKey(true, downVector, DOWN_AXIS, camera.orientation);
+		}
+	}
+
 	Vector3f wasd = forwardVector + leftVector + backVector + rightVector;
 	Vector3f updown = upVector + downVector;
 
@@ -123,62 +164,19 @@ void Player::set_position(const Point3f &position_) {
 }
 
 void Player::adjust_pitch(const float &phi) {
-	// const Quaternion backup = camera.orientation;
-	// const Vector3f backup_up = camera.get_up();
-
-	// camera.adjust_pitch(phi);
-
-	// if (camera.get_up().k < 0.0f && backup_up.k >= 0.0f)
-	// 	camera.orientation = backup;
-
-	// camera.position += camera.get_left().get_ij().normalized() * distance;
-	// camera.position.z += phi;
-	// camera.look_at(center, Vector3f(0.0f, 1.0f, 0.0f));
-
-
 	camera_xz = Quaternion::Axis_Angle(Vector3f(0.0f, 1.0f, 0.0f), phi/1000.0f) * camera_xz;
-	// Quaternion yz_ = Quaternion::Axis_Angle(Vector3f(0.0f, 1.0f, 0.0f), phi/1000.0f) * camera.orientation;
-
-	// Vector3f offset(-100.0f, 0.0f, 0.0);
-	// camera.position = center + (yz_ * offset);
-	// camera.look_at(center);
 }
 
 void Player::turn_left_xy(const float &theta) {
-	// camera.turn_left_xy(theta);
-	// camera.position.x += theta;
-	// camera.move_left_xy(theta);
-	// camera.look_at(center);
-
-
-	// camera.turn_left_xy(theta / 100.0f);
-	camera_xy = Quaternion::Axis_Angle(Vector3f(0.0f, 0.0f, -1.0f), theta/1000.0f) * camera_xy;// * camera.orientation;
-
-	// Vector3f offset(-100.0f, 0.0f, 0.0);
-	// camera.position = center + (camera_xy * offset);
-	// camera.look_at(center);
+	camera_xy = Quaternion::Axis_Angle(Vector3f(0.0f, 0.0f, -1.0f), theta/1000.0f) * camera_xy;
 }
 
 void Player::on_mouse_motion(const float &x, const float &y) {
-	// Quaternion originalOrientation = camera.orientation;
-	// Vector3f originalPosition = camera.position;
-
 	adjust_pitch(y);
 	turn_left_xy(x);
-
-	// camera_look_orientation = camera.orientation;
-	// camera_look_position = camera.position - center;
-
-	// camera.orientation = originalOrientation;
-	// camera.position = originalPosition;
-	Vector3f offset(-100.0f, 0.0f, 0.0);
-	// camera_look_position = center + (camera_xy * camera_xz * offset);
-	// camera.look_at(center);
 }
 
 void Player::apply_camera() {
-	// camera.orientation = camera_look_orientation;
-	// camera.position    = center + camera_look_position;
 	Vector3f offset(-100.0f, 0.0f, 0.0);
 	camera.position = center + (camera_xy * camera_xz * offset);
 	camera.look_at(center);
