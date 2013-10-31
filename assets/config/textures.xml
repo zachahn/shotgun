@@ -49,6 +49,10 @@ The following things are unsupported:
     <filepath>textures/player.png</filepath>
     <tile>1</tile>
   </PLAYER.PNG>
+  <SHIELD.PNG>
+    <filepath>textures/player-shield.png</filepath>
+    <tile>1</tile>
+  </SHIELD.PNG>
 
   <POWERFUL.PNG>
     <filepath>textures/powerful.png</filepath>
@@ -66,6 +70,19 @@ The following things are unsupported:
     <filepath>textures/super.png</filepath>
     <tile>1</tile>
   </SUPER.PNG>
+
+  <LOG.PNG>
+    <filepath>textures/log.png</filepath>
+    <tile>1</tile>
+  </LOG.PNG>
+
+  <crosshair>
+    <filepath>textures/crosshair.png</filepath>
+    <tile>1</tile>
+  </crosshair>
+
+  
+
   <!--
   <one>
     <is_sprite>0</is_sprite>
