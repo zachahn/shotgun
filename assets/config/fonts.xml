@@ -19,34 +19,43 @@ Only TrueType fonts are supported.
 -->
 <Fonts>
   <system_36_x600>
-    <filepath>fonts/FORGOTTE.TTF</filepath>
+    <filepath>fonts/Orbitron Bold.ttf</filepath>
     <height>36</height>
     <virtual_screen>
       <height>600</height>
     </virtual_screen>
   </system_36_x600>
   <system_36_500x600>
-    <filepath>fonts/FORGOTTE.TTF</filepath>
-    <height>36</height>
+    <filepath>fonts/Orbitron Medium.ttf</filepath>
+    <height>24</height>
     <virtual_screen>
       <width>500</width>
       <height>600</height>
     </virtual_screen>
   </system_36_500x600>
   <system_36_800x600>
-    <filepath>fonts/FORGOTTE.TTF</filepath>
-    <height>36</height>
+    <!-- <filepath>fonts/FORGOTTE.TTF</filepath> -->
+    <filepath>fonts/Orbitron Medium.ttf</filepath>
+    <height>18</height>
     <virtual_screen>
       <width>800</width>
       <height>600</height>
     </virtual_screen>
   </system_36_800x600>
   <title>
-    <filepath>fonts/FORGOTTE.TTF</filepath>
+    <filepath>fonts/Orbitron Bold.ttf</filepath>
     <height>92</height>
     <virtual_screen>
       <width>800</width>
       <height>600</height>
     </virtual_screen>
   </title>
+  <onscreen>
+    <filepath>fonts/Orbitron Bold.ttf</filepath>
+    <height>12</height>
+    <virtual_screen>
+      <width>800</width>
+      <height>600</height>
+    </virtual_screen>
+  </onscreen>
 </Fonts>
