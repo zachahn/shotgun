@@ -36,10 +36,15 @@ void Crate::init() {
 	calculate_radius();
 
 	if (! m_instance_count) {
-		regular_model  = new Model("models/planet-regular.3ds");
-		powerful_model = new Model("models/planet-powerful.3ds");
-		range_model    = new Model("models/planet-range.3ds");
-		super_model    = new Model("models/planet-super.3ds");
+		regular_model       = new Model("models/planet-regular.3ds");
+		powerful_model      = new Model("models/planet-powerful.3ds");
+		range_model         = new Model("models/planet-range.3ds");
+		super_model         = new Model("models/planet-super.3ds");
+		dead_model          = new Model("models/planet-dead.3ds");
+		regular_hurt_model  = new Model("models/planet-regular-hurt.3ds");
+		range_hurt_model    = new Model("models/planet-range-hurt.3ds");
+		powerful_hurt_model = new Model("models/planet-powerful-hurt.3ds");
+		super_hurt_model    = new Model("models/planet-super-hurt.3ds");
 	}
 
 	if      (POWERFUL == type) {
@@ -67,6 +72,9 @@ void Crate::init() {
 		shooting_interval = 0.2f;
 		damage = 100;
 	}
+
+	hit_start = 0.0f;
+	hit_show_length = 0.05f;
 }
 
 Crate & Crate::operator=(const Crate &rhs) {
@@ -107,6 +115,38 @@ void Crate::calculate_radius() {
 }
 
 void Crate::render() {
+	if (health <= 0) {
+		model = dead_model;
+	}
+	else if (get_Timer().get_seconds() <= hit_start + hit_show_length) {
+		if      (POWERFUL == type) {
+			model = powerful_hurt_model;
+		}
+		else if (RANGE == type) {
+			model = range_hurt_model;
+		}
+		else if (SUPER == type) {
+			model = super_hurt_model;
+		}
+		else if (REGULAR == type) {
+			model = regular_hurt_model;
+		}
+	}
+	else {
+		if      (POWERFUL == type) {
+			model = powerful_model;
+		}
+		else if (RANGE == type) {
+			model = range_model;
+		}
+		else if (SUPER == type) {
+			model = super_model;
+		}
+		else if (REGULAR == type) {
+			model = regular_model;
+		}
+	}
+
 	model->set_translate(center);
 	model->set_scale(scale);
 	model->render();
@@ -114,6 +154,8 @@ void Crate::render() {
 
 void Crate::hit(int damage) {
 	health -= damage;
+
+	hit_start = get_Timer().get_seconds();
 
 	calculate_radius();
 
@@ -164,10 +206,15 @@ void Crate::create_body() {
 	m_source->set_position(center);
 }
 
-Model* Crate::powerful_model = 0;
-Model* Crate::range_model    = 0;
-Model* Crate::regular_model  = 0;
-Model* Crate::super_model    = 0;
+Model* Crate::powerful_model      = 0;
+Model* Crate::range_model         = 0;
+Model* Crate::regular_model       = 0;
+Model* Crate::super_model         = 0;
+Model* Crate::dead_model          = 0;
+Model* Crate::powerful_hurt_model = 0;
+Model* Crate::range_hurt_model    = 0;
+Model* Crate::regular_hurt_model  = 0;
+Model* Crate::super_hurt_model    = 0;
 
 unsigned long Crate::m_instance_count = 0lu;
 

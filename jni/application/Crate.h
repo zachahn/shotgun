@@ -26,6 +26,9 @@ public:
 
 	int damage;
 
+	float hit_start;
+	float hit_show_length;
+
 	Crate(const Point3f &center_, const int &type_ = REGULAR, const int &size_ = SMALL);
 
 	Crate(const Crate &rhs);
@@ -54,6 +57,11 @@ private:
 	static Model* range_model;
 	static Model* powerful_model;
 	static Model* super_model;
+	static Model* dead_model;
+	static Model* regular_hurt_model;
+	static Model* range_hurt_model;
+	static Model* powerful_hurt_model;
+	static Model* super_hurt_model;
 	static unsigned long m_instance_count;
 
 	Sound_Source * m_source;

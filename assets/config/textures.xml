@@ -55,21 +55,43 @@ The following things are unsupported:
   </SHIELD.PNG>
 
   <POWERFUL.PNG>
-    <filepath>textures/powerful.png</filepath>
+    <filepath>textures/planet-powerful.png</filepath>
     <tile>1</tile>
   </POWERFUL.PNG>
   <RANGE.PNG>
-    <filepath>textures/range.png</filepath>
+    <filepath>textures/planet-range.png</filepath>
     <tile>1</tile>
   </RANGE.PNG>
   <REGULAR.PNG>
-    <filepath>textures/regular.png</filepath>
+    <filepath>textures/planet-regular.png</filepath>
     <tile>1</tile>
   </REGULAR.PNG>
   <SUPER.PNG>
-    <filepath>textures/super.png</filepath>
+    <filepath>textures/planet-super.png</filepath>
     <tile>1</tile>
   </SUPER.PNG>
+
+  <DEAD.PNG>
+    <filepath>textures/planet-dead.png</filepath>
+    <tile>1</tile>
+  </DEAD.PNG>
+
+  <HURTPOWE.PNG>
+    <filepath>textures/planet-powerful-hurt.png</filepath>
+    <tile>1</tile>
+  </HURTPOWE.PNG>
+  <HURTRANG.PNG>
+    <filepath>textures/planet-range-hurt.png</filepath>
+    <tile>1</tile>
+  </HURTRANG.PNG>
+  <HURTREGU.PNG>
+    <filepath>textures/planet-regular-hurt.png</filepath>
+    <tile>1</tile>
+  </HURTREGU.PNG>
+  <HURTSUPE.PNG>
+    <filepath>textures/planet-super-hurt.png</filepath>
+    <tile>1</tile>
+  </HURTSUPE.PNG>
 
   <LOG.PNG>
     <filepath>textures/log.png</filepath>
@@ -80,8 +102,6 @@ The following things are unsupported:
     <filepath>textures/crosshair.png</filepath>
     <tile>1</tile>
   </crosshair>
-
-  
 
   <!--
   <one>

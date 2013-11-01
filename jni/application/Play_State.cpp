@@ -27,11 +27,11 @@ Play_State::Play_State()
 
 	set_pausable(true);
 
-	get_Video().set_ambient_lighting(Color(1.0f, 0.0f, 0.0f, 0.0f));
+	// get_Video().set_ambient_lighting(Color(1.0f, 0.0f, 0.0f, 0.0f));
 
-	get_Video().set_Material(m);
+	// get_Video().set_Material(m);
 
-	get_Video().set_Light(0, light0);
+	// get_Video().set_Light(0, light0);
 }
 
 Play_State::~Play_State() {
