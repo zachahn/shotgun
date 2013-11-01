@@ -110,8 +110,6 @@ void Crate::calculate_radius() {
 	radius = powf(float(health), 0.3333f) + 10.0f;
 
 	scale = Vector3f(radius, radius, radius);
-
-	cout << radius<< endl;
 }
 
 void Crate::render() {
