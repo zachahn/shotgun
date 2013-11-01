@@ -21,6 +21,9 @@ Play_State::Play_State()
 	  )
 	, firing(false)
 {
+	gameover = false;
+	gameover_since = 0.0f;
+
 	crates.push_back(new Crate(Point3f(100.0f, 100.0f, 0.0f), Crate::POWERFUL, Crate::SMALL));
 	crates.push_back(new Crate(Point3f(100.0f, 200.0f, 0.0f), Crate::SUPER, Crate::BIG));
 	crates.push_back(new Crate(Point3f(300.0f, 500.0f, 0.0f), Crate::RANGE, Crate::HUGE));
@@ -46,6 +49,10 @@ void Play_State::on_push() {
 }
 
 void Play_State::on_key(const SDL_KeyboardEvent &event) {
+	if (gameover) {
+		return;
+	}
+
 	if (event.repeat) {
 		return;
 	}
@@ -58,11 +65,26 @@ void Play_State::on_key(const SDL_KeyboardEvent &event) {
 }
 
 void Play_State::on_mouse_button(const SDL_MouseButtonEvent &event) {
+	if (gameover) {
+		firing = false;
+		return;
+	}
+
 	firing = event.state == SDL_PRESSED;
 }
 
 void Play_State::on_mouse_motion(const SDL_MouseMotionEvent &event) {
 	m_player.on_mouse_motion(float(event.xrel), float(event.yrel));
+}
+
+Vector3f ORIGIN_SPRAY(float mag) {
+	int big(mag * 2 * 10);
+
+	return Vector3f(
+		(float(rand() % big)/10.0f) - mag,
+		(float(rand() % big)/10.0f) - mag,
+		(float(rand() % big)/10.0f) - mag
+	);
 }
 
 void Play_State::perform_logic() {
@@ -73,6 +95,10 @@ void Play_State::perform_logic() {
 	const Time_HQ current_time = get_Timer_HQ().get_time();
 	float processing_time = float(current_time.get_seconds_since(time_passed));
 	time_passed = current_time;
+
+	if (gameover && get_Timer().get_seconds() >= gameover_since + 2.0f) {
+		get_Game().pop_state();
+	}
 
 	const Vector3f velocity = m_player.get_next_velocity();
 	const Vector3f x_vel = velocity.get_i();
@@ -88,16 +114,46 @@ void Play_State::perform_logic() {
 			player_bullets.push_back(
 				new Bullet(
 					m_player.get_camera().get_forward(),
-					m_player.center + Vector3f(
-						(float(rand() % 100)/10.0f) - 5.0f,
-						(float(rand() % 100)/10.0f) - 5.0f,
-						(float(rand() % 100)/10.0f) - 5.0f
-					),
+					m_player.center + ORIGIN_SPRAY(5.0f),
 					m_player.damage
 				)
 			);
 		}
 	}
+
+
+	const Vector3f &position = m_player.center;
+	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
+		Vector3f v = position - (*c)->center;
+		if (v.magnitude() <= (*c)->range) {
+			if ((*c)->fire(get_Timer().get_seconds())) {
+				v += ORIGIN_SPRAY(100.0f);
+				enemy_bullets.push_back(
+					new Bullet(
+						v.normalized(),
+						(*c)->center + ORIGIN_SPRAY(7.0f),
+						(*c)->damage
+					)
+				);
+			}
+		}
+
+		if      ((*c)->follow == 1 && (*c)->health > 0 ) {
+			if (v.magnitude() >= 100.0f) {
+				Vector3f a = v;
+				a.z = 0.0f;
+				(*c)->set_position( (*c)->center + (a.normalized() * 20.0f *  processing_time) );
+			}
+		}
+		else if ((*c)->follow == 2 && (*c)->health > 0) {
+			if (v.magnitude() <= 500.0f) {
+				Vector3f a = -v;
+				a.z = 0.0f;
+				(*c)->set_position( (*c)->center + (a.normalized() * 25.0f *  processing_time) );
+			}
+		}
+	}
+
 
 	/** Keep delays under control (if the program hangs for some time, we don't want to lose responsiveness) **/
 	if (processing_time > 0.1f)
@@ -121,16 +177,6 @@ void Play_State::perform_logic() {
 		if (position.z < 50.0f) {
 			m_player.set_position(Point3f(position.x, position.y, 50.0f));
 			m_player.set_on_ground(true);
-		}
-	}
-
-	const Vector3f &position = m_player.center;
-	for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
-		Vector3f v = position - (*c)->center;
-		if (v.magnitude() <= (*c)->range) {
-			if ((*c)->fire(get_Timer().get_seconds())) {
-				enemy_bullets.push_back(new Bullet(v.normalized(), (*c)->center, (*c)->damage));
-			}
 		}
 	}
 
@@ -169,7 +215,15 @@ void Play_State::render() {
 		, bl2/2.0f - Point2f(10.0f, 10.0f)
 		, bl2/2.0f + Point2f(10.0f, 10.0f)
 	);
+
+	get_Fonts()["onscreen"].render_text("HEALTH: " + ulltoa(m_player.health), Point2f(), Color());
+	get_Fonts()["onscreen"].render_text("WEAPON: " + ulltoa(m_player.damage), Point2f(0.0f, 30.0f), Color());
+	if (gameover) {
+		get_Fonts()["onscreen"].render_text("GAME OVER", Point2f(0.0f, 60.0f), Color());
+	}
 }
+
+float MAX_BULLET_DISTANCE = 1000.0f;
 
 void Play_State::partial_step(const float &time_step, const Vector3f &velocity) {
 	m_player.set_velocity(velocity);
@@ -182,15 +236,23 @@ void Play_State::partial_step(const float &time_step, const Vector3f &velocity) 
 
 		bool collided = false;
 
+		// player bullets hit enemy
 		for (vector<Crate*>::iterator c = crates.begin(); c != crates.end(); ++c) {
 			if ((*c)->get_body().intersects((*b)->get_body())) {
 				(*c)->hit((*b)->damage);
+				m_player.health += (*b)->damage;
+
 				collided = true;
 				break;
 			}
 		}
 
+		// remove collided bullets
 		if (collided) {
+			delete (*b);
+			b = player_bullets.erase(b);
+		}
+		else if ((*b)->distance_travelled >= MAX_BULLET_DISTANCE) {
 			delete (*b);
 			b = player_bullets.erase(b);
 		}
@@ -199,12 +261,20 @@ void Play_State::partial_step(const float &time_step, const Vector3f &velocity) 
 		}
 	}
 
-	for (vector<Bullet*>::iterator b = enemy_bullets.begin(); b != enemy_bullets.end();)
-	{
+	for (vector<Bullet*>::iterator b = enemy_bullets.begin(); b != enemy_bullets.end();) {
 		(*b)->fly(time_step);
 
+		// enemy bullets hit player
 		if ((*b)->get_body().intersects(m_player.get_body())) {
 			m_player.hit((*b)->damage);
+			if (m_player.health <= 0) {
+				gameover = true;
+				gameover_since = get_Timer().get_seconds();
+			}
+			delete (*b);
+			b = enemy_bullets.erase(b);
+		}
+		else if ((*b)->distance_travelled >= MAX_BULLET_DISTANCE) {
 			delete (*b);
 			b = enemy_bullets.erase(b);
 		}

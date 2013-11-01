@@ -24,6 +24,8 @@ Bullet::Bullet(const Vector3f &direction_, const Point3f &corner_, const int &da
 
 	speed = 20.0f;
 
+	distance_travelled = 0.0f;
+
 	create_body();
 }
 
@@ -62,6 +64,7 @@ void Bullet::collide() {
 }
 
 void Bullet::fly(float time_step) {
+	distance_travelled += speed * time_step;
 	center += direction * speed * time_step;
 
 	create_body();

@@ -36,6 +36,8 @@ public:
 
 	int damage;
 
+	float distance_travelled;
+
 private:
 	void create_body();
 

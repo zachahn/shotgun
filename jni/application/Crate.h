@@ -29,6 +29,10 @@ public:
 	float hit_start;
 	float hit_show_length;
 
+	int follow;
+
+	float max_speed;
+
 	Crate(const Point3f &center_, const int &type_ = REGULAR, const int &size_ = SMALL);
 
 	Crate(const Crate &rhs);
@@ -46,6 +50,10 @@ public:
 	bool fire(float time);
 
 	void calculate_radius();
+
+	void set_position(const Point3f &position_);
+
+	Vector3f spray();
 
 	const Collision::Sphere & get_body() const;
 

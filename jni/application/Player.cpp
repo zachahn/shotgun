@@ -177,7 +177,7 @@ void Player::on_mouse_motion(const float &x, const float &y) {
 }
 
 void Player::apply_camera() {
-	Vector3f offset(-100.0f, 0.0f, 0.0);
+	Vector3f offset(-m_radius - 100.0f, 0.0f, 0.0);
 	camera.position = center + (camera_xy * camera_xz * offset);
 	camera.look_at(center);
 }
@@ -228,15 +228,24 @@ bool Player::fire(float time) {
 void Player::hit(int damage) {
 	health -= damage;
 	shield_start = get_Timer().get_seconds();
+
+	create_body();
+}
+
+void Player::plusHealth(int additionalHealth) {
+	health += additionalHealth;
+
+	create_body();
 }
 
 void Player::create_body() {
 	Sound &sr = get_Sound();
 
-	body = Sphere(
-		  center
-		, m_radius
-	);
+	health = health < 0 ? 0 : health;
+
+	m_radius = powf(float(health), 0.3333f) + 10.0f;
+
+	body = Sphere(center, m_radius);
 
 	sr.set_listener_position(camera.position);
 	sr.set_listener_forward_and_up(camera.get_forward(), camera.get_up());

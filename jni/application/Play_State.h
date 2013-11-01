@@ -44,6 +44,9 @@ private:
 
 	Projector3D projector3;
 	Projector2D projector2;
+
+	bool gameover;
+	float gameover_since;
 };
 
 #endif

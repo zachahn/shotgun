@@ -50,31 +50,35 @@ void Crate::init() {
 	if      (POWERFUL == type) {
 		model = powerful_model;
 		range = 150.0f;
-		shooting_interval = 0.25f;
+		shooting_interval = 0.025f;
 		damage = 200;
 	}
 	else if (RANGE == type) {
 		model = range_model;
 		range = 250.0f;
-		shooting_interval = 0.25f;
+		shooting_interval = 0.025f;
 		damage = 100;
 	}
 	else if (SUPER == type) {
 		model = super_model;
 		range = 220.0f;
-		shooting_interval = 0.25f;
+		shooting_interval = 0.025f;
 		damage = 200;
 	}
 	else {
 		model = regular_model;
 		range = 150.0f;
 		type = REGULAR;
-		shooting_interval = 0.2f;
+		shooting_interval = 0.02f;
 		damage = 100;
 	}
 
 	hit_start = 0.0f;
 	hit_show_length = 0.05f;
+
+	follow = 0;
+
+	max_speed = 20.0f;
 }
 
 Crate & Crate::operator=(const Crate &rhs) {
@@ -110,6 +114,11 @@ void Crate::calculate_radius() {
 	radius = powf(float(health), 0.3333f) + 10.0f;
 
 	scale = Vector3f(radius, radius, radius);
+}
+
+void Crate::set_position(const Point3f &position_) {
+	center = position_;
+	create_body();
 }
 
 void Crate::render() {
@@ -153,6 +162,16 @@ void Crate::render() {
 void Crate::hit(int damage) {
 	health -= damage;
 
+	if (follow == 0) {
+		follow = 1;
+	}
+	else if (follow == 1) {
+		cout << "HEALTH " << health << endl;
+		if (health <= 1000) {
+			follow = 2;
+		}
+	}
+
 	hit_start = get_Timer().get_seconds();
 
 	calculate_radius();
@@ -178,6 +197,16 @@ bool Crate::fire(float time) {
 	}
 
 	return false;
+}
+
+Vector3f Crate::spray() {
+	float mag = 7.0f;
+
+	return Vector3f(
+		(float(rand() % 1400)/100.0f) - mag,
+		(float(rand() % 1400)/100.0f) - mag,
+		(float(rand() % 1400)/100.0f) - mag
+	);
 }
 
 const Collision::Sphere & Crate::get_body() const {

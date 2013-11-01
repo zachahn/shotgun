@@ -78,6 +78,8 @@ public:
 
 	void hit(int damage);
 
+	void plusHealth(int additionalHealth);
+
 private:
 	void create_body();
 
