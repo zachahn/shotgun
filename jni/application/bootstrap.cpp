@@ -25,7 +25,19 @@ public:
 			  Point2f()
 			, Point2f(800.0f, 600.0f)
 			, "system_36_800x600"
-			, "This demonstrates a simple way of doing collision detection and response in 3D. "
+			, "You are an alien space ship. Shoot the planets to gain their health.\n"
+			  "\n"
+			  "Bigger planets have more health\n"
+			  "Red planets have powerful weapons\n"
+			  "Blue planets have long range weapons\n"
+			  "Purple planets have powerful and long range weapons\n"
+			  "\n"
+			  "CONTROLS: \n"
+			  "\n"
+			  "Mouse: Look around\n"
+			  "WASD: Move on XY plane relative to current mouselook position\n"
+			  "Space: Reset movement vectors\n"
+			  "Click: Shoot\n"
 			  "Unfortunately, it is inadequate for more sophisticated scenarios."
 			, Color()
 		  )

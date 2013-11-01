@@ -32,12 +32,14 @@ private:
 
 	vector<Crate*> crates;
 	vector<Bullet*> player_bullets;
+	vector<Bullet*> player_eaters;
 	vector<Bullet*> enemy_bullets;
 
 	Player m_player;
 
 	bool m_moved;
 	bool firing;
+	bool eating;
 
 	Light light0;
 	Material m;

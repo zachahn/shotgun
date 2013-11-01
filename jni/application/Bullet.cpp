@@ -9,22 +9,40 @@ using namespace Zeni::Collision;
 using namespace std;
 
 
-Bullet::Bullet(const Vector3f &direction_, const Point3f &corner_, const int &damage_, const Vector3f &scale_)
+Bullet::Bullet(const Vector3f &direction_, const Point3f &corner_, const int &type_, const int &damage_, const float &range_, const Vector3f &scale_)
 	: center(corner_)
 	, scale(scale_)
 	, direction(direction_)
 	, damage(damage_)
+	, range(range_)
 {
 	if (! instance_count) {
-		model = new Model("models/bullet-log.3ds");
+		enemy  = new Model("models/bullet-enemy.3ds");
+		attack = new Model("models/bullet-attack.3ds");
+		eat    = new Model("models/bullet-eat.3ds");
 	}
 	++instance_count;
 
 	direction.normalized();
 
+	rotation = Quaternion::Axis_Angle(direction, 0.0f);
+
 	speed = 20.0f;
 
 	distance_travelled = 0.0f;
+
+	if (type_ == ENEMY) {
+		model = enemy;
+	}
+	else if (type_ == ATTACK) {
+		model = attack;
+	}
+	else if (type_ == EAT) {
+		model = eat;
+	}
+	else {
+		model = eat;
+	}
 
 	create_body();
 }
@@ -56,6 +74,7 @@ Bullet::~Bullet() {
 
 void Bullet::render() {
 	model->set_translate(center);
+	model->set_rotate(rotation);
 	model->set_scale(scale);
 	model->render();
 }
@@ -78,5 +97,8 @@ void Bullet::create_body() {
 	body = Sphere(center, scale.x);
 }
 
-Model * Bullet::model = 0;
+Model* Bullet::enemy  = 0;
+Model* Bullet::attack = 0;
+Model* Bullet::eat    = 0;
+
 unsigned long Bullet::instance_count = 0lu;

@@ -28,6 +28,8 @@ public:
 	int damage;
 	int health;
 
+	float bullet_range;
+
 	Model shield;
 	Model model;
 	Point3f center;

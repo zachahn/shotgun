@@ -11,10 +11,16 @@ using namespace Zeni;
 
 class Bullet {
 public:
+	const static int ENEMY  = 0;
+	const static int ATTACK = 1;
+	const static int EAT    = 2;
+
 	Bullet(
 		const Zeni::Vector3f &direction_,
 		const Zeni::Point3f &corner_,
+		const int &type_,
 		const int &damage_,
+		const float &range_ = 150.0f,
 		const Zeni::Vector3f &scale_ = Zeni::Vector3f(1.0f, 1.0f, 1.0f)
 	);
 	Bullet(const Bullet &rhs);
@@ -32,9 +38,12 @@ public:
 	// Level 2 (or whatever)
 	Zeni::Point3f center;
 	Zeni::Vector3f direction;
+	Quaternion rotation;
 	float speed;
 
 	int damage;
+
+	float range;
 
 	float distance_travelled;
 
@@ -42,7 +51,11 @@ private:
 	void create_body();
 
 	// Level 1
-	static Zeni::Model * model;
+	static Model* enemy;
+	static Model* attack;
+	static Model* eat;
+	Model* model;
+
 	static unsigned long instance_count;
 
 	// Level 2

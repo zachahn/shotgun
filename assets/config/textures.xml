@@ -93,10 +93,29 @@ The following things are unsupported:
     <tile>1</tile>
   </HURTSUPE.PNG>
 
+
+  <ENEMY.PNG>
+    <filepath>textures/bullet-enemy.png</filepath>
+    <tile>1</tile>
+  </ENEMY.PNG>
+  <ATTACK.PNG>
+    <filepath>textures/bullet-attack.png</filepath>
+    <tile>1</tile>
+  </ATTACK.PNG>
+  <EAT.PNG>
+    <filepath>textures/bullet-eat.png</filepath>
+    <tile>1</tile>
+  </EAT.PNG>
+
+
   <LOG.PNG>
-    <filepath>textures/log.png</filepath>
+    <filepath>textures/eshield.png</filepath>
     <tile>1</tile>
   </LOG.PNG>
+  <BALL.PNG>
+    <filepath>textures/bullet-ball.png</filepath>
+    <tile>1</tile>
+  </BALL.PNG>
 
   <crosshair>
     <filepath>textures/crosshair.png</filepath>
