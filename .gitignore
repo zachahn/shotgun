@@ -14,4 +14,4 @@
 /assets/stderr.txt
 /assets/stdout.txt
 
-*.pdf
+!*.pdf
