@@ -25,20 +25,21 @@ public:
 			  Point2f()
 			, Point2f(800.0f, 600.0f)
 			, "system_36_800x600"
-			, "You are an alien space ship. Shoot the planets to gain their health.\n"
+			, "You are an alien space ship. Shoot the planets.\n"
 			  "\n"
 			  "Bigger planets have more health\n"
 			  "Red planets have powerful weapons\n"
-			  "Blue planets have long range weapons\n"
+			  "Blue planets have fast weapons\n"
 			  "Purple planets have powerful and long range weapons\n"
 			  "\n"
 			  "CONTROLS: \n"
 			  "\n"
 			  "Mouse: Look around\n"
 			  "WASD: Move on XY plane relative to current mouselook position\n"
+			  "QE: Move on the Z axis (Q = up, E = down)\n"
 			  "Space: Reset movement vectors\n"
-			  "Click: Shoot\n"
-			  "Unfortunately, it is inadequate for more sophisticated scenarios."
+			  "Right click: Get planets' health\n"
+			  "Left click: Get planets' attack power\n"
 			, Color()
 		  )
 	{

@@ -25,7 +25,7 @@ Bullet::Bullet(const Vector3f &direction_, const Point3f &corner_, const int &ty
 
 	direction.normalized();
 
-	rotation = Quaternion::Axis_Angle(direction, 0.0f);
+	rotation = Quaternion::Axis_Angle(direction, 1.54f);
 
 	speed = 20.0f;
 

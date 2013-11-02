@@ -108,14 +108,6 @@ The following things are unsupported:
   </EAT.PNG>
 
 
-  <LOG.PNG>
-    <filepath>textures/eshield.png</filepath>
-    <tile>1</tile>
-  </LOG.PNG>
-  <BALL.PNG>
-    <filepath>textures/bullet-ball.png</filepath>
-    <tile>1</tile>
-  </BALL.PNG>
 
   <crosshair>
     <filepath>textures/crosshair.png</filepath>

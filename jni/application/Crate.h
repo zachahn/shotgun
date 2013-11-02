@@ -32,6 +32,7 @@ public:
 	int follow;
 
 	float max_speed;
+	float killed_at;
 
 	Crate(const Point3f &center_, const int &type_ = REGULAR, const int &size_ = SMALL);
 
@@ -57,6 +58,8 @@ public:
 
 	const Collision::Sphere & get_body() const;
 
+	int type;
+
 private:
 	void create_body();
 
@@ -79,7 +82,6 @@ private:
 	// Level 2
 	float radius;
 	Vector3f scale;
-	int type;
 
 	// Level 3
 	Collision::Sphere body; // not motion so much as collision

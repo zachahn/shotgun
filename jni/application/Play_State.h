@@ -49,6 +49,9 @@ private:
 
 	bool gameover;
 	float gameover_since;
+
+	bool win;
+	float win_since;
 };
 
 #endif

@@ -35,6 +35,8 @@ Crate::Crate(const Crate &rhs)
 void Crate::init() {
 	calculate_radius();
 
+	killed_at = 0.0f;
+
 	if (! m_instance_count) {
 		regular_model       = new Model("models/planet-regular.3ds");
 		powerful_model      = new Model("models/planet-powerful.3ds");
@@ -55,9 +57,9 @@ void Crate::init() {
 	}
 	else if (RANGE == type) {
 		model = range_model;
-		range = 250.0f;
-		shooting_interval = 0.025f;
-		damage = 100;
+		range = 110.0f;
+		shooting_interval = 0.01f;
+		damage = 20;
 	}
 	else if (SUPER == type) {
 		model = super_model;
@@ -67,10 +69,10 @@ void Crate::init() {
 	}
 	else {
 		model = regular_model;
-		range = 150.0f;
+		range = 140.0f;
 		type = REGULAR;
 		shooting_interval = 0.02f;
-		damage = 100;
+		damage = 80;
 	}
 
 	hit_start = 0.0f;
@@ -78,7 +80,7 @@ void Crate::init() {
 
 	follow = 0;
 
-	max_speed = 20.0f;
+	max_speed = 15.0f;
 }
 
 Crate & Crate::operator=(const Crate &rhs) {
@@ -166,9 +168,14 @@ void Crate::hit(int damage) {
 		follow = 1;
 	}
 	else if (follow == 1) {
-		cout << "HEALTH " << health << endl;
 		if (health <= 1000) {
 			follow = 2;
+		}
+	}
+
+	if (health <=0) {
+		if (killed_at == 0.0f) {
+			killed_at = get_Timer().get_seconds();
 		}
 	}
 

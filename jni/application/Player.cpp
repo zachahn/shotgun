@@ -27,7 +27,7 @@ Player::Player(const Camera &camera_, const Vector3f &end_point_b_, const float 
 
 	damage = 50;
 	health = 10000;
-	bullet_range = 150.0f;
+	bullet_range = 200.0f;
 
 	on_mouse_motion(0.0f, 0.0f);
 	apply_camera();
